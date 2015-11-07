@@ -73,7 +73,7 @@ export default class Builder extends React.Component {
       if (text.indexOf(' class="instagram-media" ') > -1) {
         return 'instagram';
       }
-      if (/src="https\:\/\/www\.youtube\.com\/embed\/([a-z0-9_\-]{11})"/i.test(text)) {
+      if (/src="https\:\/\/www\.youtube\.com\/embed\//i.test(text)) {
         return 'youtube';
       }
     }
@@ -230,40 +230,73 @@ export default class Builder extends React.Component {
 
     if (network === 'youtube') {
       if (type === 'block') {
-        let matches = text.match(/src="https\:\/\/www\.youtube\.com\/embed\/([a-z0-9_\-]{11})"/i);
+        const matches = text.match(/\ssrc="([^"]+)"\s/);
         if (!matches || !matches[1]) {
           return null;
         }
-        const elementId = 'youtube-video-' + matches[1];
-        return { type: 'twitter', elementId: elementId, render: () => this.renderYoutubePlayer(matches[1], elementId) };
+
+        const parsedUrl = this.parseUrl(matches[1]);
+        const params = Qs.parse(parsedUrl.query);
+        const pathname = parsedUrl.pathname;
+
+        let video_id;
+        let list = { list_id: params.list, index: params.index };
+
+        if (/\/embed\/videoseries/.test(pathname)) {
+          video_id = null;
+        } else {
+          const vid_matches = pathname.match(/\embed\/([a-z0-9_\-]{11})/i);
+          if (vid_matches && vid_matches.length > 1 && vid_matches[1]) {
+            video_id = vid_matches[1];
+          }
+        }
+        if (!video_id && !list.list_id) {
+          return null;
+        }
+        const elementId = 'youtube-video-' + (video_id || list.list_id);
+        return { type: 'twitter', elementId: elementId, render: () => this.renderYoutubePlayer(video_id, list, elementId) };
       }
       if (type === 'url') {
         const parsedUrl = this.parseUrl(text);
+        const params = Qs.parse(parsedUrl.query);
         let video_id = null;
+        let list = { list_id: params['list'], index: params['index'] }
         if (parsedUrl.hostname.indexOf('youtu.be') > -1) {
           const matches = text.match(/\/\/youtu\.be\/([a-z0-9_\_]{11})/i);
           if (matches && matches.length > 1 && matches[1]) {
             video_id = matches[1];
           }
         } else if (parsedUrl.hostname.indexOf('youtube.com') > -1) {
-          const params = Qs.parse(parsedUrl.query);
           video_id = params['v'] || params['video_id'];
         }
-        if (!video_id) {
+        if (!video_id && !list.list_id) {
           return null;
         }
-        const elementId = 'youtube-video-' + video_id;
-        return { type: 'youtube', elementId: elementId, render: () => this.renderYoutubePlayer(video_id, elementId) };
+        const elementId = 'youtube-video-' + (video_id || list.list_id);
+        return { type: 'youtube', elementId: elementId, render: () => this.renderYoutubePlayer(video_id, list, elementId) };
       }
     } // Youtube
   }
 
-  renderYoutubePlayer(video_id, elementId) {
-    return new YT.Player(elementId, {
+  renderYoutubePlayer(video_id, list, elementId) {
+    let player;
+    let params = {
       height: '390',
       width: '640',
-      videoId: video_id
-    });
+      videoId: video_id,
+      autoplay: 0,
+      playerVars: { autoplay: 0 },
+      events: {
+        'onReady': function() {
+          if (!player || !list || !list.list_id) {
+            return;
+          }
+          player.cuePlaylist({ list: list.list_id, listType: 'playlist', index: list.index });
+          player.stopVideo();
+        }
+      }
+    };
+    player = new YT.Player(elementId, params);
   }
 
   promisedGetCardForText(text, type, network) {
