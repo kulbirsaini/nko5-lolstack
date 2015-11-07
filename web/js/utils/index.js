@@ -4,6 +4,7 @@ import { getTwitterCard } from './twitter';
 import { getYoutubeCard } from './youtube';
 import { getVineCard } from './vine';
 import { getInstagramCard } from './instagram';
+import { getImgurCard } from './imgur';
 
 import { parseUrl } from './common';
 
@@ -31,6 +32,9 @@ export function getNetworkTypeFromBlock(text) {
   ) {
     return 'twitter';
   }
+  if (text.indexOf(' class="imgur-embed-pub" ') > -1) {
+    return 'imgur';
+  }
   if (/\ssrc="https:\/\/vine\.co\/v\//i.test(text)) {
     return 'vine';
   }
@@ -57,11 +61,14 @@ export function getNetworkTypeFromUrl(text) {
   if (parsedUrl.hostname.indexOf('youtube.com') > -1 || parsedUrl.hostname.indexOf('youtu.be') > -1) {
     return 'youtube';
   }
+  if (parsedUrl.hostname === 'imgur.com') {
+    return 'imgur';
+  }
   return null;
 }
 
 export function getCard(text, cards) {
-  const VALID_NETWORKS = ['twitter', 'instagram', 'youtube', 'vine'];
+  const VALID_NETWORKS = ['twitter', 'instagram', 'youtube', 'vine', 'imgur'];
   const VALID_TEXT_TYPES = ['block', 'url'];
 
   const textType = getTextType(text);
@@ -92,6 +99,9 @@ export function getCard(text, cards) {
       break;
     case 'youtube':
       card = getYoutubeCard(text, textType, cards);
+      break;
+    case 'imgur':
+      card = getImgurCard(text, textType, cards);
       break;
   }
 
