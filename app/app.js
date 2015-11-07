@@ -10,7 +10,7 @@ const app     = express();
 app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
 
-app.get('*', (req, res, next) => {
+app.get('*', (req, res) => {
   debug(req.originalUrl);
   res.status(200).sendFile(path.join(__dirname, '../public/index.html'));
 });

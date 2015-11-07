@@ -26,7 +26,7 @@ export function GET(url, data = null) {
 export function corsGET(url, data = null) {
   const callback = `callback_${Date.now()}`;
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     window[callback] = function (data) {
       delete window[callback];
       resolve(data);

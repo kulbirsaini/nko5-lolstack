@@ -1,6 +1,5 @@
 'use strict';
 
-const cached  = require('gulp-cached');
 const del     = require('del');
 const eslint  = require('gulp-eslint');
 const gulp    = require('gulp');
