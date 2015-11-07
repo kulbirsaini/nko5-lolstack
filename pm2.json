@@ -1,0 +1,16 @@
+{
+  "apps" : [{
+    "name"        : "lolstack",
+    "script"      : "devServer.js",
+    "args"        : [],
+    "watch"       : true,
+    "node_args"   : "--harmony",
+    "merge_logs"  : true,
+    "cwd"         : "/home/saini/Desktop/nodeko/lolstack",
+    "watch"       : [ "app", "devServer.js" ],
+    "env": {
+        "NODE_ENV": "development",
+        "DEBUG"   : "jamadar:*,lolstack:*"
+    }
+  }]
+}
