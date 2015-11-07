@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import Qs from 'qs';
 import { TextField, RaisedButton } from  'material-ui';
 
 import { getTweetJson, getInstagramJson } from '../api';
@@ -36,21 +37,8 @@ export default class Builder extends React.Component {
     return {
       hostname: parser.hostname,
       pathname: parser.pathname,
-      query: parser.query
+      query: (parser.search || '').replace(/^\?/, '')
     };
-  }
-
-  getTweetIdFromUrl(url) {
-    const parsedUrl = this.parseUrl(url);
-    if (!/twitter\.com$/.test(parsedUrl.hostname)) {
-      return null;
-    }
-    if (!/[^\s]+\/status\/\d+/i.test(parsedUrl.pathname)) {
-      return null;
-    }
-    const matches = parsedUrl.pathname.match(/\/status\/(\d+)/);
-    console.log(matches);
-    return matches[1];
   }
 
   findElementIdInCards(elementId) {
@@ -85,6 +73,9 @@ export default class Builder extends React.Component {
       if (text.indexOf(' class="instagram-media" ') > -1) {
         return 'instagram';
       }
+      if (/src="https\:\/\/www\.youtube\.com\/embed\/([a-z0-9_\-]{11})"/i.test(text)) {
+        return 'youtube';
+      }
     }
     if (type === 'url') {
       const parsedUrl = this.parseUrl(text);
@@ -96,6 +87,9 @@ export default class Builder extends React.Component {
       }
       if (parsedUrl.hostname === 'instagr.am' || parsedUrl.hostname === 'instagram.com') {
         return 'instagram';
+      }
+      if (parsedUrl.hostname.indexOf('youtube.com') > -1 || parsedUrl.hostname.indexOf('youtu.be') > -1) {
+        return 'youtube';
       }
     }
   }
@@ -233,11 +227,48 @@ export default class Builder extends React.Component {
           })
       }
     } // Instagram
+
+    if (network === 'youtube') {
+      if (type === 'block') {
+        let matches = text.match(/src="https\:\/\/www\.youtube\.com\/embed\/([a-z0-9_\-]{11})"/i);
+        if (!matches || !matches[1]) {
+          return null;
+        }
+        const elementId = 'youtube-video-' + matches[1];
+        return { type: 'twitter', elementId: elementId, render: () => this.renderYoutubePlayer(matches[1], elementId) };
+      }
+      if (type === 'url') {
+        const parsedUrl = this.parseUrl(text);
+        let video_id = null;
+        if (parsedUrl.hostname.indexOf('youtu.be') > -1) {
+          const matches = text.match(/\/\/youtu\.be\/([a-z0-9_\_]{11})/i);
+          if (matches && matches.length > 1 && matches[1]) {
+            video_id = matches[1];
+          }
+        } else if (parsedUrl.hostname.indexOf('youtube.com') > -1) {
+          const params = Qs.parse(parsedUrl.query);
+          video_id = params['v'] || params['video_id'];
+        }
+        if (!video_id) {
+          return null;
+        }
+        const elementId = 'youtube-video-' + video_id;
+        return { type: 'youtube', elementId: elementId, render: () => this.renderYoutubePlayer(video_id, elementId) };
+      }
+    } // Youtube
+  }
+
+  renderYoutubePlayer(video_id, elementId) {
+    return new YT.Player(elementId, {
+      height: '390',
+      width: '640',
+      videoId: video_id
+    });
   }
 
   promisedGetCardForText(text, type, network) {
     const response = this.getCardForText(this.state.text, type, network);
-    if ('then' in response) {
+    if (response && 'then' in response) {
       return response;
     }
     return Promise.resolve(response);
