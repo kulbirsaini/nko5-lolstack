@@ -3,7 +3,7 @@
 import React from 'react';
 import { TextField, RaisedButton } from  'material-ui';
 
-import { getTweetJson } from '../api';
+import { getTweetJson, getInstagramJson } from '../api';
 
 import Cards from './cards';
 
@@ -13,18 +13,21 @@ export default class Builder extends React.Component {
     this.state = this.initialState();
     this.onUrlChange = this.onUrlChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.findTweetIdInCards = this.findTweetIdInCards.bind(this);
+    this.findElementIdInCards = this.findElementIdInCards.bind(this);
+    this.getCardForText = this.getCardForText.bind(this);
+    this.promisedGetCardForText = this.promisedGetCardForText.bind(this);
   }
 
   initialState() {
     return {
-      currentUrl: '',
+      text: '',
+      busy: false,
       cards: []
     };
   }
 
   onUrlChange(event) {
-    this.setState({ currentUrl: event.target.value });
+    this.setState({ text: (event.target.value || '').replace(/^\s+|\s+$/g,'') });
   }
 
   parseUrl(url) {
@@ -42,7 +45,7 @@ export default class Builder extends React.Component {
     if (!/twitter\.com$/.test(parsedUrl.hostname)) {
       return null;
     }
-    if (!/[a-z_0-9\-]+\/status\/\d+/i.test(parsedUrl.pathname)) {
+    if (!/[^\s]+\/status\/\d+/i.test(parsedUrl.pathname)) {
       return null;
     }
     const matches = parsedUrl.pathname.match(/\/status\/(\d+)/);
@@ -50,20 +53,218 @@ export default class Builder extends React.Component {
     return matches[1];
   }
 
-  findTweetIdInCards(tweetId) {
-    return this.state.cards.filter((card) => card.type === 'twitter' && card.tweetId === tweetId).length !== 0;
+  findElementIdInCards(elementId) {
+    return this.state.cards.filter((card) => card.elementId === elementId).length !== 0;
+  }
+
+  detectTextType(text) {
+    if (
+      text.indexOf('<blockquote') > -1 ||
+      text.indexOf('<a ') > -1 ||
+      text.indexOf('<iframe ') > -1
+      ) {
+      return 'block';
+    }
+    return 'url';
+  }
+
+  detectNetwork(text, type) {
+    if (type === 'block') {
+      if (
+        text.indexOf(' class="twitter-tweet" ') > -1 ||
+        text.indexOf(' class="twitter-video" ') > -1 ||
+        text.indexOf(' class="twitter-moment" ') > -1 ||
+        text.indexOf(' class="twitter-timeline" ') > -1 ||
+        text.indexOf(' class="twitter-grid" ') > -1
+        ) {
+        return 'twitter';
+      }
+      if (/\ssrc="https:\/\/vine\.co\/v\//i.test(text)) {
+        return 'vine';
+      }
+      if (text.indexOf(' class="instagram-media" ') > -1) {
+        return 'instagram';
+      }
+    }
+    if (type === 'url') {
+      const parsedUrl = this.parseUrl(text);
+      if (parsedUrl.hostname === 'twitter.com' || parsedUrl.hostname === 'www.twitter.com') {
+        return 'twitter';
+      }
+      if (parsedUrl.hostname === 'vine.co') {
+        return 'vine';
+      }
+      if (parsedUrl.hostname === 'instagr.am' || parsedUrl.hostname === 'instagram.com') {
+        return 'instagram';
+      }
+    }
+  }
+
+  getCardForText(text, type, network) {
+    if (network === 'twitter') {
+      if (type === 'block') {
+        if (text.indexOf(' class="twitter-tweet" ') > -1) {
+          let matches = text.match(/<a href="https:\/\/twitter.com\/[^\/]+\/status\/(\d+)">/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-tweet-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createTweet(matches[1], document.getElementById(elementId), { align: 'left' }) };
+        }
+        if (text.indexOf(' class="twitter-video" ') > -1) {
+          let matches = text.match(/<a href="https:\/\/twitter.com\/[^\/]+\/status\/(\d+)">/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-video-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createVideo(matches[1], document.getElementById(elementId), { align: 'left' }) };
+        }
+        if (text.indexOf(' class="twitter-moment" ') > -1) {
+          let matches = text.match(/href="https:\/\/twitter.com\/i\/moments\/(\d+)">/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-moment-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createMoment(matches[1], document.getElementById(elementId), { width: 400, align: 'left' }) };
+        }
+        if (text.indexOf(' class="twitter-timeline" ') > -1) {
+          let matches = text.match(/\sdata-widget-id="(\d+)"/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-timeline-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createTimeline(matches[1], document.getElementById(elementId), { tweetLimit: 4, align: 'left' }) };
+        }
+        if (text.indexOf(' class="twitter-grid" ') > -1) {
+          let matches = text.match(/href="https:\/\/twitter.com\/[^\/]+\/timelines\/(\d+)">/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-timeline-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createGridFromCollection(matches[1], document.getElementById(elementId), { limit: 4, width: 400, align: 'left' }) };
+        }
+      }
+      if (type === 'url') {
+        const parsedUrl = this.parseUrl(text);
+        const pathname = parsedUrl.pathname;
+
+        if (/\/status\//.test(pathname)) {
+          const matches = pathname.match(/\/status\/(\d+)/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-tweet-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createTweet(matches[1], document.getElementById(elementId), { align: 'left' }) };
+        }
+        if (/\/i\/moments\/\d+/.test(pathname)) {
+          const matches = pathname.match(/\/i\/moments\/(\d+)/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-moment-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createMoment(matches[1], document.getElementById(elementId), { width: 400, align: 'left' }) };
+        }
+        if (/\/timelines\/\d+/.test(pathname)) {
+          const matches = pathname.match(/\/timelines\/(\d+)/);
+          if (!matches || !matches[1]) {
+            return null;
+          }
+          const elementId = 'twitter-timeline-' + matches[1];
+          return { type: 'twitter', elementId: elementId, render: () => twttr.widgets.createGridFromCollection(matches[1], document.getElementById(elementId), { limit: 4, width: 400, align: 'left' }) };
+        }
+      }
+    } // Twitter
+    if (network === 'vine') {
+      if (type === 'block') {
+        let matches = text.match(/src="https:\/\/vine\.co\/v\/([^\/]+)\/embed/);
+        if (!matches || !matches[1]) {
+          return null;
+        }
+        const elementId = 'vine-embed-' + matches[1];
+        return { type: 'vine', elementId: elementId, render: () => {
+          document.getElementById(elementId).innerHTML = '<iframe src="https://vine.co/v/' + matches[1] + '/embed/simple" width="400" height="400" frameborder="0" />';
+        } };
+      }
+      if (type === 'url') {
+        const parsedUrl = this.parseUrl(text);
+        const pathname = parsedUrl.pathname;
+        let matches = text.match(/\/v\/([^\/]+)/);
+        if (!matches || !matches[1]) {
+          return null;
+        }
+        const elementId = 'vine-embed-' + matches[1];
+        return { type: 'vine', elementId: elementId, render: () => {
+          document.getElementById(elementId).innerHTML = '<iframe src="https://vine.co/v/' + matches[1] + '/embed/simple" width="400" height="400" frameborder="0" />';
+        } };
+      }
+    } // Vine
+
+    if (network === 'instagram') {
+      if (type === 'block') {
+        let matches = text.match(/<a href="https:\/\/instagram.com\/p\/([^\/]+)\/"/);
+        if (!matches || !matches[1]) {
+          return null;
+        }
+        const elementId = 'instagram-media-' + matches[1];
+        return getInstagramJson(`http://instagr.am/p/${matches[1]}/`)
+          .then((data) => {
+            const elementId = 'instagram-media' + data.media_id;
+            return { type: 'instagram', elementId: elementId, render: () => {
+              document.getElementById(elementId).innerHTML = data.html;
+              instgrm.Embeds.process();
+            } };
+          })
+      }
+      if (type === 'url') {
+        const parsedUrl = this.parseUrl(text);
+        const pathname = parsedUrl.pathname;
+        let matches = text.match(/\/p\/([^\/]+)/);
+        if (!matches || !matches[1]) {
+          return null;
+        }
+        const elementId = 'instagram-media-' + matches[1];
+        return getInstagramJson(`http://instagr.am/p/${matches[1]}/`)
+          .then((data) => {
+            const elementId = 'instagram-media' + data.media_id;
+            return { type: 'instagram', elementId: elementId, render: () => {
+              document.getElementById(elementId).innerHTML = data.html;
+              instgrm.Embeds.process();
+            } };
+          })
+      }
+    } // Instagram
+  }
+
+  promisedGetCardForText(text, type, network) {
+    const response = this.getCardForText(this.state.text, type, network);
+    if ('then' in response) {
+      return response;
+    }
+    return Promise.resolve(response);
   }
 
   onSubmit() {
-    if (!this.state.currentUrl) {
+    if (!this.state.text) {
       return alert('Enter a url first');
     }
-    const tweetId = this.getTweetIdFromUrl(this.state.currentUrl);
-    if (this.findTweetIdInCards(tweetId)) {
-      this.setState({ currentUrl: '' });
-      return alert('Tweet already in cards');
-    }
-    this.setState({ currentUrl: '', cards: this.state.cards.concat({ type: 'twitter', elementId: 'tweet-' + tweetId, tweetId }) });
+    this.setState({ busy: true });
+    const type = this.detectTextType(this.state.text);
+    const network = this.detectNetwork(this.state.text, type);
+    this.promisedGetCardForText(this.state.text, type, network)
+      .then((card) => {
+        console.log(type, network, card);
+        if (!card) {
+          this.setState({ busy: false });
+          return alert('Failed to parse');
+        }
+
+        if (this.findElementIdInCards(card.elementId)) {
+          this.setState({ text: '' });
+          this.setState({ busy: false });
+          return alert('Card already exists');
+        }
+        this.setState({ text: '', cards: this.state.cards.concat(card), busy: false });
+      });
   }
 
   render() {
@@ -71,9 +272,9 @@ export default class Builder extends React.Component {
       <div>
         <TextField
           hintText='Enter url to a tweet, instagram, facebook post or youtube video'
-          value={this.state.currentUrl}
+          value={this.state.text}
           onChange={this.onUrlChange} />
-        <RaisedButton label='Submit' secondary={true} onClick={this.onSubmit} />
+        <RaisedButton label='Submit' secondary={true} onClick={this.onSubmit} disabled={this.state.busy} />
         <Cards cards={this.state.cards} />
       </div>
     );

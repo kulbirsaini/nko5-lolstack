@@ -13,23 +13,14 @@ export default class Cards extends React.Component {
     return {};
   }
 
-  getTweetWidget(tweetId, elementId) {
-    twttr.widgets.createTweet(tweetId, document.getElementById(elementId), { align: 'left' });
-  }
-
   renderCards(cards) {
     cards.forEach((card) => {
       if (this.state[card.elementId] && this.state[card.elementId].rendered === true) {
         return;
       }
-      switch(card.type) {
-        case 'twitter':
-          this.getTweetWidget(card.tweetId, card.elementId);
-          this.setState({ [card.elementId]: { rendered: true } });
-          return;
-        default:
-          console.log('Unknown card type', card.type);
-      };
+      card.render();
+      this.setState({ [card.elementId]: { rendered: true } });
+      return;
     });
   }
 
