@@ -22,10 +22,13 @@ export default class Cards extends React.Component {
       this.setState({ [card.elementId]: { rendered: true } });
       return;
     });
+    if (cards.filter((card) => card.type === 'instagram').length !== 0) {
+      instgrm.Embeds.process();
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.props.cards != nextProps.cards;
+    return this.props.cards !== nextProps.cards;
   }
 
   componentDidUpdate() {
