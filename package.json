@@ -22,6 +22,7 @@
     "gulp-eslint": "^1.0.0",
     "history": "^1.12.6",
     "isomorphic-fetch": "^2.2.0",
+    "jamadar": "^0.1.2",
     "material-ui": "^0.13.0",
     "node-sass": "^3.4.0",
     "react": "^0.14.0",
@@ -46,6 +47,7 @@
     "webpack-stream": "^2.1.1"
   },
   "scripts": {
+    "prestart": "DEBUG=jamadar:* node --harmony scripts/migrate",
     "start": "node --harmony app/index.js",
     "postinstall": "node scripts/postinstall.js"
   }
