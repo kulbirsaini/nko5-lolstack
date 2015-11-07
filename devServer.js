@@ -8,7 +8,7 @@ const path     = require('path');
 const webpack  = require('webpack');
 
 const LolstackApp       = require(path.join(__dirname, './app/app'));
-const webpackConfig  = require(path.join(__dirname, './webpack.config'));
+const webpackConfig  = require(path.join(__dirname, './webpack.config.dev'));
 
 const app       = express();
 const compiler  = webpack(webpackConfig);

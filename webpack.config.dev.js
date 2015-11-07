@@ -8,6 +8,7 @@ module.exports = {
 
   entry: {
     home: [
+      'webpack-hot-middleware/client',
       './js/index.js'
     ]
   },
@@ -34,7 +35,8 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
   ],
   eslint: {
     configFile: '.eslintrc'

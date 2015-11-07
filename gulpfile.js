@@ -4,7 +4,6 @@ const cached  = require('gulp-cached');
 const del     = require('del');
 const eslint  = require('gulp-eslint');
 const gulp    = require('gulp');
-const install = require('gulp-install');
 const webpack = require('webpack-stream');
 
 const webpackConfig = require('./webpack.config');
