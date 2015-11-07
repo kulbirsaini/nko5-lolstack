@@ -3,7 +3,7 @@
 const app   = require('./app');
 const debug = require('debug')('lolstack:index');
 
-app.listen(9000, function(error) {
+app.listen(8080, function(error) {
   if (error) {
     console.log(error);
     return;
