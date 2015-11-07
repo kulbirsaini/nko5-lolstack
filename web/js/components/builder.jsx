@@ -292,7 +292,6 @@ export default class Builder extends React.Component {
             return;
           }
           player.cuePlaylist({ list: list.list_id, listType: 'playlist', index: list.index });
-          player.stopVideo();
         }
       }
     };
