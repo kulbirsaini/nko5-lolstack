@@ -41,8 +41,8 @@ export default class LoginPage extends Component {
           </div>
           <div className={classNames('info')}>
             <div className={classNames('info-container')}>
-              <div className={classNames('video')}>
-                <iframe width="420" height="315" src="https://www.youtube.com/embed/BHDqKYDctCY" frameBorder="0"></iframe>
+              <div className={classNames('video')} style={ { textAlign: 'center' } }>
+                <iframe width="600" height="390" src="https://www.youtube.com/embed/BHDqKYDctCY" frameBorder="0"></iframe>
               </div>
               <div className={classNames('message')}>
                 <div className={classNames('title')}>
