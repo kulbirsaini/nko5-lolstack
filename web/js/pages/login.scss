@@ -125,6 +125,7 @@ html {
   max-width: 600px;
   margin: 0px auto;
   background-color: white;
+  margin-bottom: 100px;
 
   .title {
     padding-left: 15px;
@@ -147,6 +148,7 @@ html {
       margin: 0px auto;
     }
   }
+
 }
 
 
@@ -174,12 +176,13 @@ html {
 .footer {
   width: 100%;
   background-color: rgba(188,188,188, 0.5);
-  height: 70px;
-  position: fixed;
+  height: 200px;
   bottom: 0px;
+  position: relative;
   .container {
     max-width: 600px;
     margin: 0px auto;
+    padding: 1px;
     .title {
       margin-top: 10px;
       font-size: 17px;
@@ -188,6 +191,13 @@ html {
     }
     a {
       margin-right: 50px;
+    }
+    .copyright {
+      position: absolute;
+      width:100%;
+      text-align: center;
+      max-width: 600px;
+      bottom: 10px;
     }
   }
 }

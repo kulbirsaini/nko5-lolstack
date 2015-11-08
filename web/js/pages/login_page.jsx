@@ -79,6 +79,7 @@ export default class LoginPage extends Component {
             <div className="title">Developers</div>
             <a href="https://twitter.com/_kulbir" className="twitter-follow-button" data-show-count="false">Follow @_kulbir</a>
             <a href="https://twitter.com/rajamal" className="twitter-follow-button" data-show-count="false">Follow @rajamal</a>
+            <div className="copyright">© Lolstack Inc.</div>
           </div>
         </div>
       </div>
