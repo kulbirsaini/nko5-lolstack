@@ -13,6 +13,7 @@ const Middlewares    = require(path.join(__dirname, './middlewares'));
 
 const authRouter     = require(path.join(__dirname, './routes/auth'));
 const boardRouter    = require(path.join(__dirname, './routes/board'));
+const userRouter     = require(path.join(__dirname, './routes/user'));
 const indexRouter    = require(path.join(__dirname, './routes/index'));
 
 const User = require(path.join(__dirname, './db/models/user'));
@@ -62,6 +63,7 @@ app.use(Middlewares.queryLogger);
 
 app.use('/auth'       , authRouter);
 app.use('/api/boards' , boardRouter);
+app.use('/api/user'   , userRouter);
 app.use('/'           , indexRouter);
 
 app.use(Middlewares.NotFoundHandler);

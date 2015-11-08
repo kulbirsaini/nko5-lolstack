@@ -4,23 +4,19 @@ import 'babel-core/polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom'
-import { AppBar, FontIcon, IconButton } from 'material-ui';
+import { FontIcon, IconButton, RaisedButton } from 'material-ui';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 import Cards from '../components/cards';
 
+import './board.scss';
+
 import { getBoard } from '../api';
 
 let homeButtonElement = (
-  <IconButton
-    tooltip='Home'
-    tooltipPosition='bottom-right'>
-    <a href='/'>
-      <FontIcon className='material-icons' color={'#000'}>home</FontIcon>
-    </a>
-  </IconButton>
+  <div className='logo'> <a href="/" >As it Happened </a> </div>
 );
 
 class Board extends React.Component {
@@ -83,19 +79,44 @@ class Board extends React.Component {
       .then(() => console.log('done'));
   }
 
+  onSave() {
+
+  }
+
+  rightButton() {
+    return <RaisedButton primary={true} label="Save" />;
+  }
+
   render() {
     return (
       <div id="main">
-        <AppBar
+        <BoardAppBar
           title={this.state.title}
-          iconElementLeft={homeButtonElement}
-          iconElementRight={this.getBoardEditElement()}
-          showMenuIconButton={true} />
-        <Cards cards={this.state.cards} />
+          rightButton={this.rightButton()} />
+        <div className="board">
+          <Cards cards={this.state.cards} />
+          <div className="chat-box">
+          </div>
+        </div>
       </div>
     );
   }
 }
+
+class BoardAppBar extends React.Component {
+  render() {
+    return (
+      <div className="top-bar">
+        <div className="logo"> <a href="/" >As it Happened </a> </div>
+        <div className="title" >{this.props.title}</div>
+        <div className="button">
+          {this.props.rightButton}
+        </div>
+      </div>
+    );
+  }
+};
+
 
 window.React = React;
 window.onload = () => ReactDOM.render(<Board />, document.getElementById('content'));

@@ -6,15 +6,12 @@ const router = require('express').Router();
 const Middlewares = require(path.join(__dirname, '../middlewares'));
 
 router.get('/', function(req, res) {
-  console.log(req.originalUrl);
   if (req._currentUser) {
-    res.render('pages/home');
+    res.render('pages/home', { current_user: req._currentUser.getProp('id') });
   } else {
     res.render('pages/login');
   }
 });
-
-router.use('/boards', Middlewares.checkCurrentUser);
 
 router.use('/boards/:board_id', Middlewares.setCurrentBoard);
 

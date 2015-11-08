@@ -8,6 +8,7 @@ const ClassWithProps = require(path.join(__dirname, '../../lib/class_with_props'
 
 const r          = config.models.r;
 const BoardModel = config.models.Board;
+const UserModel  = config.models.User;
 
 class Board extends ClassWithProps {
   constructor(json) {
@@ -67,13 +68,20 @@ class Board extends ClassWithProps {
     count = parseInt(count) || 10;
     count = _.min([100, _.max([1, count])]);
 
+    let query;
     if (order === 'desc') {
       cursor = (cursor === -1 || cursor === '-1') ? r.maxval : cursor;
-      return BoardModel.between([true, r.minval], [true, cursor], { index: 'published_created_at' }).orderBy(r.desc('created_at')).limit(count).run();
+      query = BoardModel.between([true, r.minval], [true, cursor], { index: 'published_created_at' }).orderBy(r.desc('created_at')).limit(count);
     } else {
       cursor = (cursor === -1 || cursor === '-1') ? r.minval : cursor;
-      return BoardModel.between([true, cursor], [true, r.maxval], { index: 'published_created_at', leftBound: 'open' }).orderBy('created_at').limit(count).run();
+      query = BoardModel.between([true, cursor], [true, r.maxval], { index: 'published_created_at', leftBound: 'open' }).orderBy('created_at').limit(count);
     }
+    return query.eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+      .then((results) => results.map((result) => Object.assign(result.left, { user: result.right })));
+  }
+
+  static forUser(user_id) {
+    return BoardModel.getAll(user_id, { index: 'user_id' }).orderBy(r.desc('created_at')).run();
   }
 }
 

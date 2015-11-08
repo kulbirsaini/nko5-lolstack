@@ -11,8 +11,6 @@ injectTapEventPlugin();
 
 import Qs from 'qs';
 
-import Cards from '../components/cards';
-
 import { getBoards } from '../api';
 import { renderCard } from '../utils';
 

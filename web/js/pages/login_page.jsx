@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
 import classNames from 'classnames';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import Mui, { Avatar, CircularProgress, List, ListItem, ListDivider, RaisedButton, Tabs, Tab } from 'material-ui';
+import { Avatar, CircularProgress, List, ListItem, ListDivider, RaisedButton, Tabs, Tab } from 'material-ui';
 
 import './login.scss';
 

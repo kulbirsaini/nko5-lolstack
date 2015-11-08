@@ -20,8 +20,6 @@ export function createInstagramEmbed(mediaId, cards) {
       if (findElementIdInCards(elementId, cards)) {
         return Promise.reject(new Error('Card already exists'));
       }
-      const render = () => document.getElementById(elementId).innerHTML = data.html.replace(/\0/g, '');
-
       return { type: 'instagram', elementId: elementId, render: { id: data.media_id, html: data.html } };
     });
 }
