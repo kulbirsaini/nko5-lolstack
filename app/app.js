@@ -1,7 +1,6 @@
 'use strict';
 
 const bodyParser      = require('body-parser');
-const debug           = require('debug')('lolstack:app');
 const express         = require('express');
 const flash           = require('connect-flash');
 const logger          = require('morgan');
@@ -13,6 +12,7 @@ const config         = require(path.join(__dirname, './config'));
 const Middlewares    = require(path.join(__dirname, './middlewares'));
 
 const authRouter     = require(path.join(__dirname, './routes/auth'));
+const boardRouter    = require(path.join(__dirname, './routes/board'));
 const indexRouter    = require(path.join(__dirname, './routes/index'));
 
 const User = require(path.join(__dirname, './db/models/user'));
@@ -60,8 +60,9 @@ app.use(Middlewares.setCurrentUser);
 
 app.use(Middlewares.queryLogger);
 
-app.use('/auth'     , authRouter);
-app.use('*'         , indexRouter);
+app.use('/auth'       , authRouter);
+app.use('/api/boards' , boardRouter);
+app.use('*'           , indexRouter);
 
 app.use(Middlewares.NotFoundHandler);
 app.use(Middlewares.errorHandler);
