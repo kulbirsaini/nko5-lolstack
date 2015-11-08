@@ -132,27 +132,30 @@ export class MostPopularTab extends Component {
     this.setState({ isLoading: true });
     return getPopularBoards(5)
       .then((boards) => this.setState({ boards: boards }))
-      .catch((error) => this.setState({ error: 'Error fetching popular boards' }))
+      .catch((error) => this.setState({ error: 'Error loading popular stories', boards: [] }))
       .then(() => this.setState({ isLoading: false }));
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <div className={classNames(['stories', 'most-popular-stories'])}>
-          <div className={classNames('progress')} >
-            <CircularProgress size={0.5} />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classNames(['stories', 'most-popular-stories'])}>
-          <StoriesList stories={this.state.boards} />
-        </div>
-      );
+    let loadingButton = (
+      <div className={classNames('progress')} >
+        <CircularProgress size={0.5}/>
+      </div>
+    );
+    if (!this.state.isLoading) {
+      loadingButton = '';
     }
-
+    let noStories = this.state.error || 'No popular stories to show';
+    if (this.state.boards.length > 0) {
+      noStories = '';
+    }
+    return (
+      <div className={classNames(['stories', 'most-popular-stories'])}>
+        {loadingButton}
+        <StoriesList stories={this.state.boards} />
+        {noStories}
+      </div>
+    );
   }
 };
 
@@ -170,26 +173,30 @@ export class LatestTab extends Component {
     this.setState({ isLoading: true });
     return getRecentBoards(5)
       .then((boards) => this.setState({ boards: boards }))
-      .catch((error) => this.setState({ error: 'Error fetching popular boards' }))
+      .catch((error) => this.setState({ error: 'Error loading recent stories', boards: [] }))
       .then(() => this.setState({ isLoading: false }));
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <div className={classNames(['stories', 'latest-stories'])}>
-          <div className={classNames('progress')} >
-            <CircularProgress size={0.5}/>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classNames(['stories', 'latest-stories'])}>
-          <StoriesList stories={this.state.boards} />
-        </div>
-      );
+    let loadingButton = (
+      <div className={classNames('progress')} >
+        <CircularProgress size={0.5}/>
+      </div>
+    );
+    if (!this.state.isLoading) {
+      loadingButton = '';
     }
+    let noStories = this.state.error || 'No recent stories to show';
+    if (this.state.boards.length > 0) {
+      noStories = '';
+    }
+    return (
+      <div className={classNames(['stories', 'latest-stories'])}>
+        {loadingButton}
+        <StoriesList stories={this.state.boards} />
+        {noStories}
+      </div>
+    );
   }
 };
 

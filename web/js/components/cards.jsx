@@ -17,9 +17,7 @@ export default class Cards extends React.Component {
   }
 
   renderCards(cards) {
-    console.log(cards.length);
     cards.forEach((card) => {
-      console.log(card.type, card.elementId);
       if (this.state[card.elementId] && this.state[card.elementId].rendered === true) {
         return;
       }
@@ -41,7 +39,6 @@ export default class Cards extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate');
     this.renderCards(this.props.cards);
   }
 

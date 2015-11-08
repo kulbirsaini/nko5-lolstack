@@ -52,7 +52,6 @@ export function createTwitterTimeline(timelineId, cards, options) {
 }
 
 export function createTwitterGridFromCollection(collectionId, cards, opts) {
-  console.log(collectionId);
   const elementId = 'twitter-timeline-' + collectionId;
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
