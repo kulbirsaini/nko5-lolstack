@@ -1,0 +1,67 @@
+$main-background-color: #EFF0F1;
+$left-menu-color: #FFFFFF;
+$selected-color: rgb(244,244,244);
+$navbar-height: 64px;
+$main-padding: 84px;
+$text-color: #555;
+$light-font-weight: 100;
+$medium-font-weight: 400;
+$bold-font-weight: 700;
+
+
+* {
+  font-family:'Open sans', Roboto, Helvetica Neue;
+  color: $text-color;
+}
+
+body {
+  background-color: $main-background-color;
+  margin: 0px;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+
+.info {
+  width: 100%;
+  background-color: #608BDE; // #BDE looks nice
+
+  .info-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0px auto;
+    .message {
+      margin: 0px auto;
+
+      .title {
+        font-size: 33px;
+        font-weight: 200;
+        width: 100%;
+        color: white;
+        text-align: center;
+      }
+      .sub-title {
+        font-size: 25px;
+        font-weight: 200;
+        color: white;
+        text-align: center;
+      }
+    }
+    .video {
+      margin: 0px auto;
+      width: 560px;
+    }
+    .supported-social-media {
+      height: 80px;
+      width: 100%;
+      display: flex;
+      justify-content: 'center';
+      .social-media-icons {
+
+      }
+    }
+  }
+}

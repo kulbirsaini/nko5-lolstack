@@ -10,10 +10,14 @@ module.exports = {
     home: [
       'webpack-hot-middleware/client',
       './js/index.js'
-    ]
+    ],
+    login: [
+      'webpack-hot-middleware/client',
+      './js/pages/login.js'
+    ],
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx", ".scss"]
   },
   output: {
     filename: "[name]-bundle.js",
