@@ -42,7 +42,7 @@ export default class LoginPage extends Component {
           <div className={classNames('info')}>
             <div className={classNames('info-container')}>
               <div className={classNames('video')}>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/xpWOO9nRvIU" frameBorder="0"></iframe>
+                <iframe width="420" height="315" src="https://www.youtube.com/embed/BHDqKYDctCY" frameborder="0"></iframe>
               </div>
               <div className={classNames('message')}>
                 <div className={classNames('title')}>
@@ -73,6 +73,13 @@ export default class LoginPage extends Component {
         <div className={classNames('stories')}>
           <div className={classNames('title')} />
           <StoryTabs />
+        </div>
+        <div className="footer">
+          <div className="container">
+            <div className="title">Developers</div>
+            <a href="https://twitter.com/_kulbir" className="twitter-follow-button" data-show-count="false">Follow @_kulbir</a>
+            <a href="https://twitter.com/rajamal" className="twitter-follow-button" data-show-count="false">Follow @rajamal</a>
+          </div>
         </div>
       </div>
     );
