@@ -36,12 +36,29 @@ router.route('/')
     }
   );
 
+router.route('/popular')
+  .get(function(req, res, next) {
+    return Board.getMostPopular(req.query.count)
+      .then((boards) => res.status(200).send(boards))
+      .catch((err) => next(new errors.GenericApiError('Unable to retrive popular boards.', 500, err)));
+  });
+
+router.route('/recent')
+  .get(function(req, res, next) {
+    return Board.getMostRecent(req.query.count)
+      .then((boards) => res.status(200).send(boards))
+      .catch((err) => next(new errors.GenericApiError('Unable to retrive recent boards.', 500, err)));
+  });
+
 router.use('/:board_id', Middlewares.setCurrentBoard, Middlewares.checkCurrentBoard);
 
 router.route('/:board_id')
-  .get(function (req, res) {
-    return res.status(200).send(Object.assign({}, req._currentBoard.toJSON(), { user: req._currentUser.getPropsWithout(['access_token', 'access_token_secret']) }));
-  })
+  .get(
+    Middlewares.incrementBoardView,
+    function (req, res) {
+      res.status(200).send(req._currentBoard.toJSON());
+    }
+  )
   .delete(
     Middlewares.checkCurrentUser,
     Middlewares.verifyCurrentBoardOwnership,
