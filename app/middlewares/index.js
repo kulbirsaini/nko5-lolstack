@@ -33,6 +33,16 @@ function checkCurrentUser(req, res, next) {
   }
 }
 
+function incrementBoardView(req, res, next) {
+  if (!req._currentBoard) {
+    return next();
+  }
+
+  return req._currentBoard.incrementViews()
+    .catch(() => {})
+    .then(() => next());
+}
+
 // Board
 function setCurrentBoard(req, res, next) {
   debug(req.originalUrl, 'Setting board', req.params.board_id);
@@ -42,7 +52,7 @@ function setCurrentBoard(req, res, next) {
   }
 
   req._currentBoard = null;
-  return Board.get(req.params.board_id)
+  return Board.getWithUser(req.params.board_id)
     .then((board) => {
       if (board) {
         req._currentBoard = board;
@@ -219,6 +229,7 @@ module.exports = {
   verifyNewBoardParams,
   verifyExistingBoardParams,
   verifyCurrentBoardOwnership,
+  incrementBoardView,
   getSessionMiddleware,
   queryLogger,
   errorHandler,

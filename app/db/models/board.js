@@ -23,6 +23,10 @@ class Board extends ClassWithProps {
     return BoardModel;
   }
 
+  incrementViews() {
+    return BoardModel.get(this.getProp('id')).update({ views: r.row("views").add(1).default(0) }).run();
+  }
+
   update(params) {
     return BoardModel.get(this.getProp('id')).update(params).run()
       .then(() => Board.get(this.getProp('id')));
@@ -42,8 +46,19 @@ class Board extends ClassWithProps {
       .then((boardJson) => (boardJson) ? new Board(boardJson) : null);
   }
 
+  static getWithUser(boardId) {
+    return BoardModel.getAll(boardId, { index: 'id' }).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+      .then((results) => {
+        if (!results || results.length === 0) {
+          return null;
+        }
+        let result = results[0];
+        return new Board(Object.assign({}, result.left, { user: result.right }));
+      });
+  }
+
   static create(boardJson) {
-    const newBoardJson = Object.assign({ created_at: Date.now(), published: boardJson.cards && boardJson.cards.length !== 0 }, boardJson);
+    const newBoardJson = Object.assign({ views: 0, created_at: Date.now(), published: boardJson.cards && boardJson.cards.length !== 0 }, boardJson);
     return BoardModel.insert(newBoardJson).run()
       .then((result) => {
         if (result.inserted === 1) {
@@ -82,6 +97,20 @@ class Board extends ClassWithProps {
 
   static forUser(user_id) {
     return BoardModel.getAll(user_id, { index: 'user_id' }).orderBy(r.desc('created_at')).run();
+  }
+
+  static getMostPopular(count) {
+    count = parseInt(count) || 5;
+    count = _.min([20, _.max([1, count])]);
+    return BoardModel.orderBy({ index: r.desc('views') }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+      .then((results) => results.map((result) => Object.assign(result.left, { user: result.right })));
+  }
+
+  static getMostRecent(count) {
+    count = parseInt(count) || 5;
+    count = _.min([20, _.max([1, count])]);
+    return BoardModel.orderBy({ index: r.desc('created_at') }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+      .then((results) => results.map((result) => Object.assign(result.left, { user: result.right })));
   }
 }
 
