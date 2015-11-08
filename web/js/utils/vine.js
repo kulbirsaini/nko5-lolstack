@@ -3,7 +3,10 @@
 import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Vine
-export function renderVineWidget(elementId, params) {
+export function renderVineWidget(elementId, params, boardId) {
+  if (boardId) {
+    elementId += '-' + boardId;
+  }
   return document.getElementById(elementId).innerHTML = `<iframe src="https://vine.co/v/${params.id}/embed/simple" width="400" height="400" frameborder="0" />`;
 }
 

@@ -85,7 +85,7 @@ class Board extends React.Component {
           <CardHeader title={board.title} subtitle={board.description} />
           <CardMedia>
             <div className='card-content'>
-              <div id={board.cards[0].elementId} />
+              <div id={`${board.cards[0].elementId}-${board.id}`} />
             </div>
           </CardMedia>
         </Card>
@@ -102,7 +102,7 @@ class Board extends React.Component {
       if (this.state.renderedBoards.indexOf(board.id) > -1) {
         return;
       }
-      renderCard(board.cards[0]);
+      renderCard(board.cards[0], board.id);
       if (board.cards[0].type === 'instagram') {
         renderInstagram = true;
       }

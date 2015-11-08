@@ -4,7 +4,10 @@ import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Twitter
 // params = { type, id, styleOptions }
-export function renderTwitterWidget(elementId, params) {
+export function renderTwitterWidget(elementId, params, boardId) {
+  if (boardId) {
+    elementId += '-' + boardId;
+  }
   switch(params.type) {
     case 'createTweet':
       return twttr.widgets.createTweet(params.id, document.getElementById(elementId), params.options);

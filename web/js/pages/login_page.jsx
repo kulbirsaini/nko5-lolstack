@@ -146,7 +146,7 @@ export class MostPopularTab extends Component {
       loadingButton = '';
     }
     let noStories = this.state.error || 'No popular stories to show';
-    if (this.state.boards.length > 0) {
+    if (this.state.isLoading || this.state.boards.length > 0) {
       noStories = '';
     }
     return (
@@ -187,7 +187,7 @@ export class LatestTab extends Component {
       loadingButton = '';
     }
     let noStories = this.state.error || 'No recent stories to show';
-    if (this.state.boards.length > 0) {
+    if (this.state.isLoading || this.state.boards.length > 0) {
       noStories = '';
     }
     return (
