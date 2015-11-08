@@ -7,9 +7,9 @@ const Middlewares = require(path.join(__dirname, '../middlewares'));
 
 router.get('/', function(req, res) {
   if (req._currentUser) {
-    res.render('pages/home', { current_user: req._currentUser.getProp('id') });
+    return res.render('pages/home', { current_user: req._currentUser.getProp('id') });
   } else {
-    res.render('pages/login');
+    return res.render('pages/login');
   }
 });
 
@@ -23,7 +23,7 @@ router.get('/boards/:board_id', function(req, res, next) {
 });
 
 router.get('/boards', function(req, res) {
-  res.render('pages/boards');
+  return res.render('pages/boards');
 });
 
 module.exports = router;

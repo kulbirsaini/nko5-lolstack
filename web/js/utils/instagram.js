@@ -4,7 +4,10 @@ import { findElementIdInCards, parseUrl } from './common';
 import { getInstagramJson } from '../api';
 
 // BEGIN - Instagram
-export function renderInstagramWidget(elementId, params) {
+export function renderInstagramWidget(elementId, params, boardId) {
+  if (boardId) {
+    elementId += '-' + boardId;
+  }
   return document.getElementById(elementId).innerHTML = params.html;
 }
 

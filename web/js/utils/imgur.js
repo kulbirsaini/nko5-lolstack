@@ -2,7 +2,10 @@
 
 import { findElementIdInCards, parseUrl } from './common';
 
-export function renderImgurWidget(elementId, params) {
+export function renderImgurWidget(elementId, params, boardId) {
+  if (boardId) {
+    elementId += '-' + boardId;
+  }
   document.getElementById(elementId).innerHTML = `<blockquote class="imgur-embed-pub" lang="en" data-id="${params.id}"></blockquote>`;
   imgurEmbed.createIframe();
 }

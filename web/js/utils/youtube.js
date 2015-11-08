@@ -3,14 +3,19 @@
 import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Youtube
-export function renderYoutubeWidget(elementId, params) {
+export function renderYoutubeWidget(elementId, params, boardId) {
+  if (boardId) {
+    elementId += '-' + boardId;
+  }
   return createYoutubePlayer(params.id, params.list, elementId);
 }
 
 export function createYoutubePlayer(video_id, list, elementId) {
   let player;
-  if (list && list.index && +list.index > 0) {
-    list.index = +list.index - 1;
+  list = list || {};
+  let index = list.index;
+  if (index && +index > 0) {
+    index = +index - 1;
   }
 
   let params = {
@@ -22,7 +27,7 @@ export function createYoutubePlayer(video_id, list, elementId) {
         if (!player || !list || !list.list_id) {
           return;
         }
-        player.cuePlaylist({ list: list.list_id, listType: 'playlist', index: list.index });
+        player.cuePlaylist({ list: list.list_id, listType: 'playlist', index });
       }
     }
   };

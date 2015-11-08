@@ -67,18 +67,18 @@ export function getNetworkTypeFromUrl(text) {
   return null;
 }
 
-export function renderCard(card) {
+export function renderCard(card, boardId) {
   switch(card.type) {
     case 'twitter':
-      return renderTwitterWidget(card.elementId, card.render);
+      return renderTwitterWidget(card.elementId, card.render, boardId);
     case 'youtube':
-      return renderYoutubeWidget(card.elementId, card.render);
+      return renderYoutubeWidget(card.elementId, card.render, boardId);
     case 'instagram':
-      return renderInstagramWidget(card.elementId, card.render);
+      return renderInstagramWidget(card.elementId, card.render, boardId);
     case 'imgur':
-      return renderImgurWidget(card.elementId, card.render);
+      return renderImgurWidget(card.elementId, card.render, boardId);
     case 'vine':
-      return renderVineWidget(card.elementId, card.render);
+      return renderVineWidget(card.elementId, card.render, boardId);
   }
 }
 

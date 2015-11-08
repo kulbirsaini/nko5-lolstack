@@ -10,14 +10,14 @@ const Middlewares = require(path.join(__dirname, '../middlewares'));
 
 router.route('/')
   .get(function(req, res, next) {
-    Board.paginate(req.query)
+    return Board.paginate(req.query)
       .then((boards) => {
         const data = {
           next_cursor: (boards.length === 0) ? 0 : _.last(boards).created_at,
           prev_cursor: req.query.cursor || -1,
           boards: boards
         };
-        res.status(200).send(data);
+        return res.status(200).send(data);
       })
       .catch((err) => next(new errors.GenericApiError('Unable to retrive boards.', 500, err)));
   })
@@ -56,7 +56,7 @@ router.route('/:board_id')
   .get(
     Middlewares.incrementBoardView,
     function (req, res) {
-      res.status(200).send(req._currentBoard.toJSON());
+      return res.status(200).send(req._currentBoard.toJSON());
     }
   )
   .delete(

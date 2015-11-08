@@ -30,15 +30,15 @@ export default class Builder extends React.Component {
   }
 
   onUrlChange(event) {
-    this.setState({ text: (event.target.value || '').replace(/^\s+|\s+$/g,'') });
+    this.setState({ text: event.target.value });
   }
 
   onTitleChange(event) {
-    this.setState({ title: (event.target.value || '').replace(/^\s+|\s+$/g,'') });
+    this.setState({ title: event.target.value });
   }
 
   onDescriptionChange(event) {
-    this.setState({ description: (event.target.value || '').replace(/^\s+|\s+$/g,'') });
+    this.setState({ description: event.target.value });
   }
 
   onSubmit() {
@@ -67,7 +67,7 @@ export default class Builder extends React.Component {
 
   onSaveClick() {
     this.setState({ busy: true });
-    const board = { title: this.state.title, description: this.state.description, cards: this.state.cards };
+    const board = { title: (this.state.title || '').replace(/^\s+|\s+$/g,''), description: (this.state.description || '').replace(/^\s+|\s+$/g,''), cards: this.state.cards };
     return createBoard({ board })
       .then((json) => {
         this.setState(this.initialState());
