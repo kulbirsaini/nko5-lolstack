@@ -161,7 +161,13 @@ class BoardAppBar extends React.Component {
   render() {
     return (
       <div className="top-bar">
-        <div className="logo"> <a href="/" >As it Happened </a> </div>
+        <div className="left">
+          <div className="logo">
+            <a href="/" >As it Happened </a>
+          </div>
+          <RaisedButton linkButton={true} href="/boards" primary={true} label="See All Stories" />
+        </div>
+
         <div className="title" >{this.props.title}</div>
         <div className="button">
           {this.props.rightButton}
