@@ -7,9 +7,15 @@ module.exports = {
   context: path.join(__dirname, "web"),
 
   entry: {
+    /*
     home: [
       'webpack-hot-middleware/client',
       './js/index.js'
+    ], */
+
+    home: [
+      'webpack-hot-middleware/client',
+      './js/pages/home.jsx'
     ],
     login: [
       'webpack-hot-middleware/client',

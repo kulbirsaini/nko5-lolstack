@@ -1,0 +1,102 @@
+$main-background-color: #EFF0F1;
+$left-menu-color: #FFFFFF;
+$selected-color: rgb(244,244,244);
+$navbar-height: 64px;
+$main-padding: 84px;
+$text-color: #555;
+$light-font-weight: 100;
+$medium-font-weight: 400;
+$bold-font-weight: 700;
+$lolstack-blue: #00bcd4;
+
+
+* {
+  font-family:'Open sans', Roboto, Helvetica Neue;
+  color: $text-color;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $main-background-color;
+  margin: 0px;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+$nav-bar-height: 60px;
+$chat-box-height: 60px;
+
+.top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  height: $nav-bar-height;
+  background-color: $lolstack-blue;
+  padding-top: 15px;
+  position: fixed;
+  top: 0px;
+
+  .logo {
+    a {
+      color: white;
+      font-size: 27px;
+      font-weight: 200;
+      font-family: Lobster;
+      text-decoration: none;
+      padding-left: 50px;
+    }
+  }
+
+  .title {
+    color: white;
+    font-size: 25px;
+  }
+}
+
+#main {
+  .container {
+    padding-top: 80px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0px auto;
+    margin-bottom: 10px;
+
+    .board-builder {
+      background-color: white;
+      padding: 30px;
+      .title {
+        color: #666;
+        text-transform: uppercase;
+        font-size: 18px;
+        padding-bottom: 10px;
+      }
+    }
+  }
+  .stories-container {
+    background-color: white;
+    min-height: 100px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0px auto;
+    margin-bottom: 20px;
+  }
+  .new-board {
+    background-color: white;
+    padding: 0px 0px 15px 0px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    margin: 0px auto;
+    .title {
+      background-color: #FF0;
+      color: #555;
+    }
+  }
+}
+
+
+
+
