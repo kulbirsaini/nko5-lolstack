@@ -6,7 +6,7 @@
     "watch"       : true,
     "node_args"   : "--harmony",
     "merge_logs"  : true,
-    "cwd"         : "/Users/amal/dev/nko15/lolstack",
+    "cwd"         : "/home/saini/Desktop/nodeko/lolstack",
     "watch"       : [ "app", "devServer.js" ],
     "env": {
         "NODE_ENV": "development",
