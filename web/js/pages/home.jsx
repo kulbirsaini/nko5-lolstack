@@ -10,6 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 import Cards from '../components/cards';
+import Logout from '../components/logout';
 import { getCard } from '../utils';
 import { createBoard, getBoards } from '../api';
 
@@ -56,10 +57,6 @@ export default class Home extends React.Component {
       });
   }
 
-  logoutButton() {
-    return <RaisedButton link={true} primary={true} label="Logout" />;
-  }
-
   getBoardsUI() {
     if (!this.state.isLoading) {
       return (
@@ -101,7 +98,7 @@ export default class Home extends React.Component {
       <div id="main">
         <BoardAppBar
           title={this.state.title}
-          rightButton={this.logoutButton()} />
+          rightButton={<Logout />} />
         <div className="container">
           <div id="board-builder" className="board-builder">
             <div className="title"> Create Board </div>

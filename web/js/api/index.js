@@ -115,3 +115,7 @@ export function updateBoard(boardId, params) {
 export function deleteBoard(boardId) {
   return DELETE(`/api/boards/${boardId}`);
 }
+
+export function logout() {
+  return DELETE('/auth/logout');
+}
