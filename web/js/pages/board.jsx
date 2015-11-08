@@ -15,10 +15,6 @@ import './board.scss';
 
 import { getBoard } from '../api';
 
-let homeButtonElement = (
-  <div className='logo'> <a href="/" >As it Happened </a> </div>
-);
-
 class Board extends React.Component {
   constructor(props) {
     super(props);

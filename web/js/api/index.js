@@ -104,6 +104,10 @@ export function getPopularBoards(count) {
   return GET('/api/boards/popular', { count });
 }
 
+export function getUserBoards() {
+  return GET('/api/user/boards');
+}
+
 export function createBoard(params) {
   return POST('/api/boards', params);
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import { TextField, RaisedButton, CircularProgress, List, ListItem, ListDivider, Avatar } from  'material-ui';
+import { TextField, RaisedButton, CircularProgress, List, ListItem, ListDivider, Avatar, IconButton, FontIcon } from  'material-ui';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -12,7 +12,7 @@ injectTapEventPlugin();
 import Cards from '../components/cards';
 import Logout from '../components/logout';
 import { getCard } from '../utils';
-import { createBoard, getBoards } from '../api';
+import { createBoard, getUserBoards } from '../api';
 
 import Builder from './home_builder';
 
@@ -31,10 +31,6 @@ export default class Home extends React.Component {
       isLoading: true,
       boards: [],
       newBoard: null,
-      prev_cursor: -1,
-      next_cursor: -1,
-      count: 10,
-      order: 'desc',
       error: null
     }
   }
@@ -49,8 +45,8 @@ export default class Home extends React.Component {
   }
 
   fetchStories() {
-    return getBoards(this.state.next_cursor, this.state.count, this.state.order)
-      .then((json) => this.setState({ boards: this.state.boards.concat(json.boards), prev_cursor: json.prev_cursor, next_cursor: json.next_cursor, isLoading: false, error: null}))
+    return getUserBoards()
+      .then((json) => this.setState({ boards: json.boards, isLoading: false, error: null}))
       .catch((error) => {
         console.log(error);
         this.setState({ error: "Error loading boards. Please try again later", isLoading: false })
