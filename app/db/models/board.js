@@ -103,14 +103,14 @@ class Board extends ClassWithProps {
   static getMostPopular(count) {
     count = parseInt(count) || 5;
     count = _.min([20, _.max([1, count])]);
-    return BoardModel.orderBy({ index: r.desc('views') }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+    return BoardModel.orderBy({ index: r.desc('views') }).filter({ published: true }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
       .then((results) => results.map((result) => Object.assign(result.left, { user: result.right })));
   }
 
   static getMostRecent(count) {
     count = parseInt(count) || 5;
     count = _.min([20, _.max([1, count])]);
-    return BoardModel.orderBy({ index: r.desc('created_at') }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
+    return BoardModel.orderBy({ index: r.desc('created_at') }).filter({ published: true }).limit(count).eqJoin('user_id', UserModel, { index: 'id' }).without({ right: ['access_token', 'access_token_secret'] }).run()
       .then((results) => results.map((result) => Object.assign(result.left, { user: result.right })));
   }
 }
