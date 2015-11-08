@@ -9,10 +9,13 @@ module.exports = {
   entry: {
     home: [
       './js/index.js'
-    ]
+    ],
+    login: [
+      './js/pages/login.js'
+    ],
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx", ".scss"]
   },
   output: {
     filename: "[name]-bundle.js",

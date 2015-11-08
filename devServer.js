@@ -22,7 +22,7 @@ app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(LolstackApp);
 
-app.listen(9000, function(error) {
+app.listen(8000, function(error) {
   if (error) {
     console.log(error);
     return;
