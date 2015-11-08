@@ -13,7 +13,6 @@ export default class App extends React.Component {
     return (
       <div id="main">
         <Builder />
-        {this.props.children}
       </div>
     );
   }

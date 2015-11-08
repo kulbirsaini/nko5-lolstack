@@ -2,10 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ReduxRouter } from 'redux-router';
-import { Provider } from  'react-redux';
 
-import store from '../store';
+import App from './app';
 
 export default class Root extends React.Component {
   static renderApp() {
@@ -14,9 +12,7 @@ export default class Root extends React.Component {
 
   render() {
     return (
-      <Provider store={store()}>
-        <ReduxRouter />
-      </Provider>
+      <App />
     );
   }
 }

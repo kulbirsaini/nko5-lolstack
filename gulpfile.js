@@ -44,7 +44,7 @@ gulp.task('webpack', ['dev-env', 'clean'], function() {
     .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('watch', ['dev-env', 'eslint', 'webpack'], function () {
+gulp.task('watch', ['dev-env', 'eslint'], function () {
   gulp.watch(files.src, ['eslint']);
 });
 

@@ -1,7 +1,8 @@
 'use strict';
 
-const path     = require('path');
-const router   = require('express').Router();
+const _      = require('lodash');
+const path   = require('path');
+const router = require('express').Router();
 
 const errors      = require(path.join(__dirname, '../lib/errors'));
 const Board       = require(path.join(__dirname, '../db/models/board'));

@@ -1,10 +1,10 @@
 'use strict';
 
-import { getTwitterCard } from './twitter';
-import { getYoutubeCard } from './youtube';
-import { getVineCard } from './vine';
-import { getInstagramCard } from './instagram';
-import { getImgurCard } from './imgur';
+import { getTwitterCard, renderTwitterWidget } from './twitter';
+import { getYoutubeCard, renderYoutubeWidget } from './youtube';
+import { getVineCard, renderVineWidget } from './vine';
+import { getInstagramCard, renderInstagramWidget } from './instagram';
+import { getImgurCard, renderImgurWidget } from './imgur';
 
 import { parseUrl } from './common';
 
@@ -65,6 +65,21 @@ export function getNetworkTypeFromUrl(text) {
     return 'imgur';
   }
   return null;
+}
+
+export function renderCard(card) {
+  switch(card.type) {
+    case 'twitter':
+      return renderTwitterWidget(card.elementId, card.render);
+    case 'youtube':
+      return renderYoutubeWidget(card.elementId, card.render);
+    case 'instagram':
+      return renderInstagramWidget(card.elementId, card.render);
+    case 'imgur':
+      return renderImgurWidget(card.elementId, card.render);
+    case 'vine':
+      return renderVineWidget(card.elementId, card.render);
+  }
 }
 
 export function getCard(text, cards) {

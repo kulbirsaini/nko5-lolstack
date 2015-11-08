@@ -13,6 +13,13 @@ module.exports = {
     login: [
       './js/pages/login.js'
     ],
+    board: [
+      './js/pages/board.jsx'
+    ],
+    boards: [
+      'webpack-hot-middleware/client',
+      './js/pages/boards.jsx'
+    ],
   },
   resolve: {
     extensions: ["", ".js", ".jsx", ".scss"]

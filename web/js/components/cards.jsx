@@ -2,6 +2,20 @@
 
 import React from 'react';
 
+import { renderCard } from '../utils';
+
+const cardsStyle = {
+  width: '100%',
+  float: 'left',
+};
+
+const cardStyle = {
+  float: 'left',
+  width: '24%',
+  minHeight: '400px',
+  margin: '5px'
+};
+
 export default class Cards extends React.Component {
   constructor(props) {
     super(props);
@@ -14,11 +28,17 @@ export default class Cards extends React.Component {
   }
 
   renderCards(cards) {
+    console.log(cards.length);
     cards.forEach((card) => {
+      console.log(card.type, card.elementId);
       if (this.state[card.elementId] && this.state[card.elementId].rendered === true) {
         return;
       }
-      card.render();
+      try {
+        renderCard(card);
+      } catch(error) {
+        console.log(error);
+      }
       this.setState({ [card.elementId]: { rendered: true } });
       return;
     });
@@ -37,9 +57,15 @@ export default class Cards extends React.Component {
   }
 
   render() {
-    const divs = this.props.cards.map((card) => <div key={card.elementId} id={card.elementId} />);
+    const divs = this.props.cards.map((card) => {
+      return (
+        <div className='card-content' key={'card-content-' + card.elementId} style={cardStyle}>
+          <div key={card.elementId} id={card.elementId} />
+        </div>
+      );
+    });
     return (
-      <div id='cards'>
+      <div id='cards' style={cardsStyle}>
         {divs}
       </div>
     );

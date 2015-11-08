@@ -27,7 +27,6 @@ export default class LoginPage extends Component {
                 <i className={classNames('fa fa-twitter-square')}></i>
                 <i className={classNames('fa fa-instagram')}></i>
                 <i className={classNames('fa fa-vine')}></i>
-
               </div>
             </div>
           </div>

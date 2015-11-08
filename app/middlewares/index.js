@@ -68,16 +68,16 @@ function verifyCards(cards) {
   }
 
   for(const card of cards) {
-    if (!card.type || VALID_CARD_TYPES.indexOf(card.type)) {
-      return new errors.MissingParameterApiError("Invalid card type" + card.type, 422);
+    if (!card.type || VALID_CARD_TYPES.indexOf(card.type) < 0) {
+      return new errors.MissingParameterApiError("Invalid card type " + card.type, 422);
     }
 
     if (!card.elementId) {
       return new errors.MissingParameterApiError("Each card must have an elementId", 422);
     }
 
-    if (!card.render || !_.isFunction(card.render)) {
-      return new errors.MissingParameterApiError("Each card must have a render function", 422);
+    if (!card.render || !_.isObject(card.render) || !card.render.id) {
+      return new errors.MissingParameterApiError("Each card must have a valid parameters", 422);
     }
   }
   return null;
@@ -103,7 +103,7 @@ function verifyNewBoardParams(req, res, next) {
   }
 
   const result = verifyCards(boardParams.cards);
-  if (!result) {
+  if (result) {
     return next(result);
   }
 
