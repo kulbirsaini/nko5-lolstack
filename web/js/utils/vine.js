@@ -18,7 +18,6 @@ export function createVineEmbed(vineId, cards) {
 export function getVineCard(text, type, cards) {
   if (type === 'block') {
     const matches = text.match(/src="https:\/\/vine\.co\/v\/([^\/]+)\/embed/);
-    console.log(matches);
     if (!matches || !matches[1]) {
       return null;
     }

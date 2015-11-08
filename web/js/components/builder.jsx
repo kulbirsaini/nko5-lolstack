@@ -70,7 +70,6 @@ export default class Builder extends React.Component {
     const board = { title: this.state.title, description: this.state.description, cards: this.state.cards };
     return createBoard({ board })
       .then((json) => {
-        console.log(json);
         this.setState(this.initialState());
       })
       .catch((error) => {
@@ -83,7 +82,6 @@ export default class Builder extends React.Component {
   onGetClick() {
     return getBoards()
       .then((result) => {
-        console.log(result);
         const board = result.boards[0];
         this.setState({ title: board.title, description: board.description, cards: board.cards });
       })
