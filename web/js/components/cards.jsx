@@ -4,17 +4,6 @@ import React from 'react';
 
 import { renderCard } from '../utils';
 
-const cardsStyle = {
-  width: '100%',
-  float: 'left',
-};
-
-const cardStyle = {
-  float: 'left',
-  width: '24%',
-  minHeight: '400px',
-  margin: '5px'
-};
 
 export default class Cards extends React.Component {
   constructor(props) {
@@ -59,13 +48,13 @@ export default class Cards extends React.Component {
   render() {
     const divs = this.props.cards.map((card) => {
       return (
-        <div className='card-content' key={'card-content-' + card.elementId} style={cardStyle}>
+        <div className='card-content' key={'card-content-' + card.elementId} >
           <div key={card.elementId} id={card.elementId} />
         </div>
       );
     });
     return (
-      <div id='cards' style={cardsStyle}>
+      <div id='cards'>
         {divs}
       </div>
     );

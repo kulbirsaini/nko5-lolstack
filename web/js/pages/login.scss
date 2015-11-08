@@ -7,6 +7,7 @@ $text-color: #555;
 $light-font-weight: 100;
 $medium-font-weight: 400;
 $bold-font-weight: 700;
+$lolstack-blue: #00bcd4;
 
 
 * {
@@ -29,7 +30,7 @@ html {
 }
 
 #top-container {
-  background-color: #00bcd4; // #608BDE; // #BDE looks nice
+  background-color: $lolstack-blue; // #608BDE; // #BDE looks nice
 }
 
 .top-bar {
