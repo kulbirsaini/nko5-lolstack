@@ -4,8 +4,9 @@ const path     = require('path');
 
 const config         = require(path.join(__dirname, '../../config'));
 const ClassWithProps = require(path.join(__dirname, '../../lib/class_with_props'));
+const Board          = require(path.join(__dirname, './board'));
 
-const UserModel = config.models.User;
+const UserModel  = config.models.User;
 
 class User extends ClassWithProps {
   constructor(json) {
@@ -23,6 +24,12 @@ class User extends ClassWithProps {
   save() {
     return UserModel.get(this.getProp('id')).update(this.getPropsWithout('id')).run()
       .then((result) => result.replaced === 1);
+  }
+
+  getBoards() {
+    const currentUserProps = this.getPropsWithout(['access_token', 'access_token_secret']);
+    return Board.forUser(this.getProp('id'))
+      .then((boards) => boards.map((board) => Object.assign({}, board, { user: currentUserProps })));
   }
 
   static findOrCreateUser(profile, token, tokenSecret) {
@@ -45,7 +52,6 @@ class User extends ClassWithProps {
   static findByTwitterId(twitterId) {
     return User.Model.getAll(twitterId, { index: 'twitter_id' }).limit(1).run()
       .then((results) => {
-        console.log(results);
         return results.length === 0 ? null : new User(results[0])
       });
   }

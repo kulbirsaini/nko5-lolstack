@@ -17,7 +17,6 @@ module.exports = {
       './js/pages/board.jsx'
     ],
     boards: [
-      'webpack-hot-middleware/client',
       './js/pages/boards.jsx'
     ],
   },

@@ -41,7 +41,7 @@ router.use('/:board_id', Middlewares.setCurrentBoard, Middlewares.checkCurrentBo
 
 router.route('/:board_id')
   .get(function (req, res) {
-    return res.status(200).send(req._currentBoard.toJSON());
+    return res.status(200).send(Object.assign({}, req._currentBoard.toJSON(), { user: req._currentUser.getPropsWithout(['access_token', 'access_token_secret']) }));
   })
   .delete(function (req, res, next) {
     return req._currentBoard.delete()
@@ -52,7 +52,7 @@ router.route('/:board_id')
     Middlewares.verifyExistingBoardParams,
     function (req, res, next) {
       return req._currentBoard.update(req._boardParams)
-        .then((board) => res.status(200).send(board.toJSON()))
+        .then((board) => res.status(200).send(Object.assign({}, board.toJSON(), { user: req._currentUser.getPropsWithout(['access_token', 'access_token_secret']) })))
         .catch((err) => next(new errors.GenericApiError('Unable to update board.', 422, err)));
     }
   );

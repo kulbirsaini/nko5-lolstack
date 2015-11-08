@@ -9,6 +9,7 @@ const RdbStore = require('session-rethinkdb')(session);
 const config = require(path.join(__dirname, '../config'));
 const errors = require(path.join(__dirname, '../lib/errors'));
 const Board  = require(path.join(__dirname, '../db/models/board'));
+const User   = require(path.join(__dirname, '../db/models/user'));
 const utils  = require(path.join(__dirname, '../lib/utils'));
 
 const sessionStore = new RdbStore(config.session);
@@ -17,7 +18,9 @@ const VALID_CARD_TYPES = ['twitter', 'youtube', 'imgur', 'instagram', 'vine'];
 
 // Current User
 function setCurrentUser(req, res, next) {
-  req._currentUser = req.user;
+  if (req.user && req.user.props) {
+    req._currentUser = new User(req.user.props);
+  }
   next();
 }
 
@@ -107,7 +110,7 @@ function verifyNewBoardParams(req, res, next) {
     return next(result);
   }
 
-  boardParams.user_id = req._currentUser.id;
+  boardParams.user_id = req._currentUser.getProp('id');
   req._boardParams = boardParams;
   return next();
 }

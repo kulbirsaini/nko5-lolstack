@@ -8,6 +8,8 @@ html
     link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
     link(href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css')
     script(src="/dist/login-bundle.js")
+    script(type="text/javascript").
+      window.current_user='#{current_user}';
   body
     div#content
     div#footer
