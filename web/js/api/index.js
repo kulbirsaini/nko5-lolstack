@@ -13,6 +13,46 @@ function errorFilter(response) {
   throw error;
 }
 
+export function POST(url, data) {
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data),
+    credentials: 'same-origin'
+  })
+  .then(errorFilter)
+  .then((response) => response.json());
+}
+
+export function PUT(url, data) {
+  return fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data),
+    credentials: 'same-origin'
+  })
+  .then(errorFilter)
+  .then((response) => response.json());
+}
+
+export function DELETE(url) {
+  return fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+  .then(errorFilter)
+  .then((response) => response.json());
+}
 
 export function GET(url, data = null) {
   if (data) {
@@ -46,4 +86,24 @@ export function getTweetJson(tweet_url) {
 
 export function getInstagramJson(url) {
   return corsGET('http://api.instagram.com/oembed', { url, omitscript: true });
+}
+
+export function getBoard(boardId) {
+  return GET(`/boards/${boardId}`);
+}
+
+export function getBoards(cursor = -1, count = 10, order = 'desc') {
+  return GET('/boards', { cursor, count, order });
+}
+
+export function createBoard(params) {
+  return POST('/boards', params);
+}
+
+export function updateBoard(boardId, params) {
+  return PUT(`/boards/${boardId}`, params)
+}
+
+export function deleteBoard(boardId) {
+  return DELETE(`/boards/${boardId}`);
 }
