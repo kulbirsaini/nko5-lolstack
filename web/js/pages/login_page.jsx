@@ -75,10 +75,10 @@ export default class LoginPage extends Component {
           <StoryTabs />
         </div><br /><br /><br />
         <div style={{ textAlign: 'center', clear: 'both' }}>
-          <a href="https://twitter.com/rajamal">
+          <a href="https://twitter.com/rajamal" title='Amal Raj'>
             <Avatar size={100} src='https://abs.twimg.com/sticky/default_profile_images/default_profile_5_200x200.png' />
           </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="https://twitter.com/_kulbir">
+          <a href="https://twitter.com/_kulbir" title='Kulbir Saini'>
             <Avatar size={100} src='https://pbs.twimg.com/profile_images/446989925494190080/4GOZB0fn.jpeg' />
           </a>
         </div>
