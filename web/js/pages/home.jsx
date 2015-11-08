@@ -6,6 +6,9 @@ import classNames from 'classnames';
 import { TextField, RaisedButton, CircularProgress, List, ListItem, ListDivider, Avatar } from  'material-ui';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 import Cards from '../components/cards';
 import { getCard } from '../utils';
 import { createBoard, getBoards } from '../api';
@@ -14,50 +17,12 @@ import Builder from './home_builder';
 
 import './home.scss';
 
-
-const boardsData = [
-  {
-    id: 1,
-    title: 'Hello World',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock'
-    }
-  },
-  {
-    id: 2,
-    title: 'Hello World 1',
-    subtitle: 'Awesome 1',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock'
-    }
-  },
-  {
-    id: 3,
-    title: 'Hello World 3',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock 3 '
-    }
-  },
-  {
-    id: 4,
-    title: 'Hello World 4',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock 4'
-    }
-  },
-];
-
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.initialState();
+    this.fetchStories = this.fetchStories.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   initialState() {
@@ -69,10 +34,11 @@ export default class Home extends React.Component {
       next_cursor: -1,
       count: 10,
       order: 'desc',
+      error: null
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.fetchStories();
   }
 
@@ -82,13 +48,11 @@ export default class Home extends React.Component {
   }
 
   fetchStories() {
-    getBoards(this.state.next_cursor, this.state.count, this.state.order)
-      .then((boardsData) => {
-        console.log(boardsData);
-        this.setState({stories: boardsData.boards, isLoading: false});
-      })
+    return getBoards(this.state.next_cursor, this.state.count, this.state.order)
+      .then((json) => this.setState({ boards: this.state.boards.concat(json.boards), prev_cursor: json.prev_cursor, next_cursor: json.next_cursor, isLoading: false, error: null}))
       .catch((error) => {
-        alert("Error loading boards. Please try again later");
+        console.log(error);
+        this.setState({ error: "Error loading boards. Please try again later", isLoading: false })
       });
   }
 
@@ -100,7 +64,7 @@ export default class Home extends React.Component {
     if (!this.state.isLoading) {
       return (
         <div className={classNames('boards')} >
-          <StoriesList stories={this.state.stories} />
+          <StoriesList stories={this.state.boards} />
         </div>
       );
     } else {
@@ -119,11 +83,11 @@ export default class Home extends React.Component {
   }
 
   getNewBoardUI() {
-    const board = this.state.newBoard || this.state.boards[0]
+    const board = this.state.newBoard;
     if (board) {
       return (
         <div className="new-board">
-          <div className="title">Board created. <a href={"/boards/" + board.id}> Edit it <></div>
+          <div className="title">Board created. <a href={"/boards/" + board.id}>Edit It</a></div>
           <StoryItem story={board} />
         </div>
       )
@@ -145,7 +109,7 @@ export default class Home extends React.Component {
           </div>
 
         </div>
-        <div class="new-board-container">
+        <div className="new-board-container">
           {this.getNewBoardUI()};
         </div>
         <div className="stories-container">
@@ -155,8 +119,6 @@ export default class Home extends React.Component {
     );
   }
 }
-
-
 
 
 class BoardAppBar extends React.Component {
@@ -189,7 +151,7 @@ export class StoryItem extends React.Component {
 
 export class StoriesList extends React.Component {
   render() {
-    const { stories } = this.props;
+    const { stories = [] } = this.props;
 
     let storyItems = [];
     stories.forEach((story) => {
