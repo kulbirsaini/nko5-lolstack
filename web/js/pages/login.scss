@@ -47,6 +47,7 @@ html {
       color: white;
       font-size: 25px;
       font-weight: 200;
+      font-family: Lobster;
     }
   }
   .top-bar-right {
@@ -116,4 +117,54 @@ html {
   width: 100%;
   max-width: 600px;
   margin: 0px auto;
+}
+
+#stories-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0px auto;
+  background-color: white;
+
+  .title {
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 20px;
+    font-family: Roboto;
+    font-weight: 500;
+    border-bottom: 1px solid #ff4081;
+    display: none;
+    text-transform: uppercase;;
+  }
+
+  .stories {
+    .title {
+
+    }
+    .progress {
+      width: 60px;
+      margin: 0px auto;
+    }
+  }
+}
+
+
+
+
+.story-item-enter {
+  opacity: 0.01;
+}
+
+.story-item-enter.story-item-enter-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.story-item-leave {
+  opacity: 1;
+}
+
+.story-item-leave.story-item-leave-active {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
 }
