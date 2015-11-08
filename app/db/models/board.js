@@ -28,7 +28,8 @@ class Board extends ClassWithProps {
   }
 
   update(params) {
-    return BoardModel.get(this.getProp('id')).update(params).run()
+    let newParams = Object.assign({ published: r.row('cards').length !== 0 }, params);
+    return BoardModel.get(this.getProp('id')).update(newParams).run()
       .then(() => Board.get(this.getProp('id')));
   }
 
