@@ -1,11 +1,9 @@
 'use strict';
 
-const BPromise = require('bluebird');
 const path     = require('path');
 
 const config         = require(path.join(__dirname, '../../config'));
 const ClassWithProps = require(path.join(__dirname, '../../lib/class_with_props'));
-const DbUpdateError  = require(path.join(__dirname, '../../lib/errors')).DbUpdateError;
 
 const UserModel = config.models.User;
 
@@ -47,7 +45,7 @@ class User extends ClassWithProps {
     return User.Model.getAll(twitterId, { index: 'twitter_id' }).limit(1).run()
       .then((results) => {
         console.log(results);
-        return results.length == 0 ? null : new User(results[0])
+        return results.length === 0 ? null : new User(results[0])
       });
   }
 
