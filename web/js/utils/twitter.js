@@ -27,7 +27,7 @@ export function createTwitterTweet(tweetId, cards, opts) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  return { type: 'twitter', elementId: elementId, render: { type: 'createTweet', id: tweetId, options: Object.assign({ align: 'left' }, opts) } };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createTweet', id: tweetId, options: Object.assign({ align: 'left', width: 600 }, opts) } };
 }
 
 export function createTwitterVideo(videoId, cards, options) {
@@ -35,7 +35,7 @@ export function createTwitterVideo(videoId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  return { type: 'twitter', elementId: elementId, render: { type: 'createVideo', id: videoId, options: Object.assign({ align: 'left' }, options) } };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createVideo', id: videoId, options: Object.assign({ align: 'left', width: 600 }, options) } };
 }
 
 export function createTwitterMoment(momentId, cards, options) {
@@ -43,7 +43,7 @@ export function createTwitterMoment(momentId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  return { type: 'twitter', elementId: elementId, render: { type: 'createMoment', id: momentId, options: Object.assign({ width: 400, align: 'left' }, options) } };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createMoment', id: momentId, options: Object.assign({ width: 600, align: 'left' }, options) } };
 }
 
 export function createTwitterTimeline(timelineId, cards, options) {
@@ -51,7 +51,7 @@ export function createTwitterTimeline(timelineId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  return { type: 'twitter', elementId: elementId, render: { type: 'createTimeline', id: timelineId, options: Object.assign({ tweetLimit: 4, align: 'left' }, options) } };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createTimeline', id: timelineId, options: Object.assign({ tweetLimit: 4, align: 'left', width: 600 }, options) } };
 }
 
 export function createTwitterGridFromCollection(collectionId, cards, opts) {
@@ -59,7 +59,7 @@ export function createTwitterGridFromCollection(collectionId, cards, opts) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  return { type: 'twitter', elementId: elementId, render: { type: 'createGridFromCollection', id: collectionId, options: Object.assign({ limit: 4, width: 400, align: 'left' }, opts) } };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createGridFromCollection', id: collectionId, options: Object.assign({ limit: 4, width: 600, align: 'left' }, opts) } };
 }
 
 export function getTwitterCard(text, type, cards) {

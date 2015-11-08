@@ -4,6 +4,7 @@ import React from 'react';
 
 import { renderCard } from '../utils';
 
+import './cards.scss';
 
 export default class Cards extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ export default class Cards extends React.Component {
     }
     const divs = this.props.cards.map((card) => {
       return (
-        <div className={`card-content card-content-${card.type}`} key={'card-content-' + card.elementId} >
+        <div className={`card-content card-content-${card.type}`} key={'card-content-' + card.elementId}>
           <div key={card.elementId} id={`${card.elementId}${boardId}`} />
         </div>
       );

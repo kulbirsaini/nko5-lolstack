@@ -20,7 +20,7 @@ export function createYoutubePlayer(video_id, list, elementId) {
 
   let params = {
     height: '390',
-    width: '400',
+    width: '600',
     videoId: video_id,
     events: {
       'onReady': function() {
