@@ -42,7 +42,7 @@ export default class LoginPage extends Component {
           <div className={classNames('info')}>
             <div className={classNames('info-container')}>
               <div className={classNames('video')}>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/xpWOO9nRvIU" frameBorder="0"></iframe>
+                <iframe width="420" height="315" src="https://www.youtube.com/embed/BHDqKYDctCY" frameborder="0"></iframe>
               </div>
               <div className={classNames('message')}>
                 <div className={classNames('title')}>
