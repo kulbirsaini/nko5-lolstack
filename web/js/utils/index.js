@@ -79,6 +79,8 @@ export function renderCard(card, boardId) {
       return renderImgurWidget(card.elementId, card.render, boardId);
     case 'vine':
       return renderVineWidget(card.elementId, card.render, boardId);
+    default:
+      return;
   }
 }
 

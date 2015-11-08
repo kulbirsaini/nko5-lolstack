@@ -16,12 +16,27 @@ export default class Cards extends React.Component {
     return { renderedCards: [] };
   }
 
+  componentDidMount() {
+    this.renderCards(this.props.cards);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.cards !== this.props.cards;
+  }
+
+  componentDidUpdate() {
+    this.renderCards(this.props.cards);
+  }
+
   renderCards(cards) {
+    if (!cards || cards.length === 0) {
+      return;
+    }
     cards.forEach((card) => {
       if (this.state.renderedCards.indexOf(card.elementId) > -1) {
         return;
       }
-      renderCard(card);
+      renderCard(card, this.props.boardId);
       this.setState({ renderedCards: this.state.renderedCards.concat(card.elementId) });
     });
     if (cards.filter((card) => card.type === 'instagram').length !== 0) {
@@ -29,15 +44,15 @@ export default class Cards extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    this.renderCards(this.props.cards);
-  }
-
   render() {
+    let boardId = '';
+    if (this.props.boardId) {
+      boardId = '-' + this.props.boardId;
+    }
     const divs = this.props.cards.map((card) => {
       return (
-        <div className='card-content' key={'card-content-' + card.elementId} >
-          <div key={card.elementId} id={card.elementId} />
+        <div className={`card-content card-content-${card.type}`} key={'card-content-' + card.elementId} >
+          <div key={card.elementId} id={`${card.elementId}${boardId}`} />
         </div>
       );
     });

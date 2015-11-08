@@ -109,7 +109,7 @@ class Board extends React.Component {
   }
 
   rightButton() {
-    if (this.state.published) {
+    if (!this.state.current_user || !this.state.user || this.state.current_user !== this.state.user.id) {
       return;
     }
     let disabled = false;
@@ -120,7 +120,7 @@ class Board extends React.Component {
   }
 
   chatUI() {
-    if (this.state.published || !this.state.current_user || !this.state.user || this.state.current_user !== this.state.user.id) {
+    if (!this.state.current_user || !this.state.user || this.state.current_user !== this.state.user.id) {
       return;
     }
     return (
@@ -132,7 +132,7 @@ class Board extends React.Component {
 
   cardsUI() {
     if (this.state.cards.length > 0) {
-      return <Cards cards={this.state.cards} />;
+      return <Cards cards={this.state.cards} boardId={this.state.boardId} />;
     } else {
       return (
         <div className="empty-card-container">
@@ -208,9 +208,10 @@ class ChatBox extends React.Component {
               /Invalid network/i.test(retValue.message) ||
               /Failed to create card/i.test(retValue.message)
             ) {
+            this.setState({ text: '' });
             return alert(retValue.message);
           }
-          console.log(error);
+          console.log(retValue);
           return alert('Unknown error!');
         }
       })
