@@ -17,13 +17,13 @@ router.use('/boards/:board_id', Middlewares.setCurrentBoard);
 
 router.get('/boards/:board_id', function(req, res, next) {
   if (req._currentBoard) {
-    return res.render('pages/board');
+    return res.render('pages/board', { current_user: req._currentUser.getProp('id') });
   }
   next();
 });
 
 router.get('/boards', function(req, res) {
-  return res.render('pages/boards');
+  return res.render('pages/boards', { current_user: req._currentUser.getProp('id') });
 });
 
 module.exports = router;
