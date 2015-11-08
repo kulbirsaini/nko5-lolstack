@@ -25,6 +25,10 @@ html {
 }
 
 #container {
+
+}
+
+#top-container {
   background-color: #00bcd4; // #608BDE; // #BDE looks nice
 }
 
@@ -105,4 +109,11 @@ html {
       }
     }
   }
+}
+
+
+#story-tabs {
+  width: 100%;
+  max-width: 600px;
+  margin: 0px auto;
 }
