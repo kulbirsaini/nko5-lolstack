@@ -8,8 +8,6 @@ const errors      = require(path.join(__dirname, '../lib/errors'));
 const Board       = require(path.join(__dirname, '../db/models/board'));
 const Middlewares = require(path.join(__dirname, '../middlewares'));
 
-router.use(Middlewares.checkCurrentUser);
-
 router.route('/')
   .get(function(req, res, next) {
     Board.paginate(req.query)
@@ -24,6 +22,7 @@ router.route('/')
       .catch((err) => next(new errors.GenericApiError('Unable to retrive boards.', 500, err)));
   })
   .post(
+    Middlewares.checkCurrentUser,
     Middlewares.verifyNewBoardParams,
     function (req, res, next) {
       return Board.create(req._boardParams)
@@ -43,12 +42,18 @@ router.route('/:board_id')
   .get(function (req, res) {
     return res.status(200).send(Object.assign({}, req._currentBoard.toJSON(), { user: req._currentUser.getPropsWithout(['access_token', 'access_token_secret']) }));
   })
-  .delete(function (req, res, next) {
-    return req._currentBoard.delete()
-      .then(() => res.status(200).send({}))
-      .catch((err) => next(new errors.GenericApiError('Unable to delete board.', 422, err)));
-  })
+  .delete(
+    Middlewares.checkCurrentUser,
+    Middlewares.verifyCurrentBoardOwnership,
+    function (req, res, next) {
+      return req._currentBoard.delete()
+        .then(() => res.status(200).send({}))
+        .catch((err) => next(new errors.GenericApiError('Unable to delete board.', 422, err)));
+    }
+  )
   .put(
+    Middlewares.checkCurrentUser,
+    Middlewares.verifyCurrentBoardOwnership,
     Middlewares.verifyExistingBoardParams,
     function (req, res, next) {
       return req._currentBoard.update(req._boardParams)

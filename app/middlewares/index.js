@@ -145,6 +145,13 @@ function verifyExistingBoardParams(req, res, next) {
   return next();
 }
 
+function verifyCurrentBoardOwnership(req, res, next) {
+  if (req._currentUser.getProp('id') === req._currentBoard.getProp('user_id')) {
+    return next();
+  }
+  next(new errors.GenericApiError('Unauthorized access to board', 403));
+}
+
 // Session
 function getSessionMiddleware() {
   return session({
@@ -211,6 +218,7 @@ module.exports = {
   checkCurrentBoard,
   verifyNewBoardParams,
   verifyExistingBoardParams,
+  verifyCurrentBoardOwnership,
   getSessionMiddleware,
   queryLogger,
   errorHandler,

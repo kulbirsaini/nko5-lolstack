@@ -13,8 +13,6 @@ router.get('/', function(req, res) {
   }
 });
 
-router.use('/boards', Middlewares.checkCurrentUser);
-
 router.use('/boards/:board_id', Middlewares.setCurrentBoard);
 
 router.get('/boards/:board_id', function(req, res, next) {
