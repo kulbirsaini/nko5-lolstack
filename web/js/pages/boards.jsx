@@ -145,10 +145,6 @@ class Board extends React.Component {
         <BoardAppBar
           title={this.state.title} />
         <div className="container">
-          <div id="board-builder" className="board-builder">
-            <div className="title"> Create Board </div>
-          </div>
-
         </div>
         <div className="new-board-container">
         </div>
