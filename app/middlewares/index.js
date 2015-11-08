@@ -102,7 +102,7 @@ function verifyNewBoardParams(req, res, next) {
 
   let boardParams = Object.assign({}, req.body.board);
 
-  debug(req.originalUrl, 'Checking board parameters', boardParams);
+  debug(req.originalUrl, 'Checking new board parameters', boardParams);
 
   if (!boardParams.title) {
     return next(new errors.MissingParameterApiError("Board does not have a title", 422));
@@ -131,7 +131,7 @@ function verifyExistingBoardParams(req, res, next) {
 
   let boardParams = Object.assign({}, req.body.board);
 
-  debug(req.originalUrl, 'Checking board parameters', boardParams);
+  debug(req.originalUrl, 'Checking existing board parameters', boardParams);
 
   if (!boardParams.title && !boardParams.description && !boardParams.cards) {
     return next(new errors.MissingParameterApiError("No updates provided", 422));
@@ -147,7 +147,7 @@ function verifyExistingBoardParams(req, res, next) {
 
   if (boardParams.cards) {
     const result = verifyCards(boardParams.cards);
-    if (!result) {
+    if (result) {
       return next(result);
     }
   }

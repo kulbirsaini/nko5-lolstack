@@ -72,7 +72,6 @@ export default class Home extends React.Component {
   onBoardCreation(board) {
     let newBoards = [board, ...this.state.boards];
     this.setState({boards : newBoards, newBoard: board});
-
   }
 
   getNewBoardUI() {

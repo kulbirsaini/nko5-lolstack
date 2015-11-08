@@ -23,7 +23,6 @@ export default class Builder extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onSaveClick = this.onSaveClick.bind(this);
-    this.onGetClick = this.onGetClick.bind(this);
   }
 
   initialState() {
@@ -82,7 +81,6 @@ export default class Builder extends React.Component {
 
     return createBoard({ board })
       .then((json) => {
-        console.log(json);
         this.setState(this.initialState());
         this.props.onBoardCreation(json);
       })
@@ -91,17 +89,6 @@ export default class Builder extends React.Component {
         alert('Error occurred');
       })
       .then(() => this.setState({ busy: false }));
-  }
-
-  onGetClick() {
-    return getBoards()
-      .then((result) => {
-        console.log(result);
-        const board = result.boards[0];
-        this.setState({ title: board.title, description: board.description, cards: board.cards });
-      })
-      .catch(console.log)
-      .then(() => console.log('done'));
   }
 
   render() {

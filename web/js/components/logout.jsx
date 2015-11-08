@@ -3,8 +3,6 @@
 import React from 'react';
 import { RaisedButton } from 'material-ui';
 
-import { logout } from '../api';
-
 export default class Logout extends React.Component {
   constructor(props) {
     super(props);

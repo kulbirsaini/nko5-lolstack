@@ -13,29 +13,20 @@ export default class Cards extends React.Component {
   }
 
   initialState() {
-    return {};
+    return { renderedCards: [] };
   }
 
   renderCards(cards) {
     cards.forEach((card) => {
-      if (this.state[card.elementId] && this.state[card.elementId].rendered === true) {
+      if (this.state.renderedCards.indexOf(card.elementId) > -1) {
         return;
       }
-      try {
-        renderCard(card);
-      } catch(error) {
-        console.log(error);
-      }
-      this.setState({ [card.elementId]: { rendered: true } });
-      return;
+      renderCard(card);
+      this.setState({ renderedCards: this.state.renderedCards.concat(card.elementId) });
     });
     if (cards.filter((card) => card.type === 'instagram').length !== 0) {
       instgrm.Embeds.process();
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.cards !== nextProps.cards;
   }
 
   componentDidUpdate() {

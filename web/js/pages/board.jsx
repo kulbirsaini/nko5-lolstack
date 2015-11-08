@@ -4,8 +4,9 @@ import 'babel-core/polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import { getCard } from '../utils';
-import { FontIcon, IconButton, RaisedButton } from 'material-ui';
+import { FontIcon, IconButton, RaisedButton, CircularProgress } from 'material-ui';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -14,13 +15,15 @@ import Cards from '../components/cards';
 
 import './board.scss';
 
-import { getBoard } from '../api';
+import { getBoard, updateBoard } from '../api';
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.initialState();
-    this.getBoardEditElement = this.getBoardEditElement.bind(this);
+    this.onTextEntered = this.onTextEntered.bind(this);
+    this.onSaveClick = this.onSaveClick.bind(this);
+    this.setStateFromBoardJson = this.setStateFromBoardJson.bind(this);
   }
 
   getBoardId() {
@@ -33,26 +36,30 @@ class Board extends React.Component {
 
   initialState() {
     return {
+      current_user: window.current_user,
       boardId: this.getBoardId(),
       title: null,
       description: null,
       created_at: null,
       published: false,
       cards: [],
+      busy: false,
+      saving: false,
+      user: {},
       error: ''
     };
   }
 
-  getBoardEditElement() {
-    return (
-      <IconButton
-        tooltip='More'
-        tooltipPosition='bottom-left'>
-        <a href={`/boards/${this.state.boardId}/edit`}>
-          <FontIcon className='material-icons' color={'#000'}>mode_edit</FontIcon>
-        </a>
-      </IconButton>
-    );
+  setStateFromBoardJson(json) {
+    this.setState({
+      title: json.title,
+      description: json.description,
+      cards: json.cards,
+      published: json.published,
+      created_at: json.created_at,
+      user: json.user,
+      error: null
+    });
   }
 
   componentWillMount() {
@@ -60,76 +67,70 @@ class Board extends React.Component {
       return this.setState({ error: 'Not found' });
     }
 
+    this.setState({ busy: true });
     return getBoard(this.state.boardId)
-      .then((json) => {
-        this.setState({
-          title: json.title,
-          description: json.description,
-          cards: json.cards,
-          published: json.published,
-          created_at: json.created_at,
-          user: json.user,
-          error: null
-        });
-      })
+      .then((json) => this.setStateFromBoardJson(json))
       .catch((error) => this.setState({ error: 'Error in fetching board' }))
-      .then(() => console.log('done'));
+      .then(() => {
+        this.setState({ busy: false });
+        console.log('done');
+      });
   }
 
-  onSave() {
-
+  onSaveClick() {
+    this.setState({ saving: true });
+    const updates = { title: (this.state.title || '').replace(/^\s+|\s+$/g,''), description: (this.state.description || '').replace(/^\s+|\s+$/g,''), cards: this.state.cards };
+    return updateBoard(this.state.boardId, { board: updates })
+      .then((json) => this.setStateFromBoardJson(json))
+      .catch((error) => {
+        console.log(error);
+        alert('An error occurred while saving!');
+      })
+      .then(() => this.setState({ saving: false }));
   }
 
-  rightButton() {
-    return <RaisedButton primary={true} label="Save" />;
+  onTextEntered(text) {
+    this.setState({ busy: true });
+    let retValue;
+    return getCard(text, this.state.cards)
+      .then((card) => {
+        this.setState({ cards: this.state.cards.concat(card) })
+        retValue = true;
+      })
+      .catch((error) => retValue = error)
+      .then(() => {
+        this.setState({ busy: false });
+        return retValue;
+      });
   }
 
   get chatBox() {
     return this.refs.chatBox;
   }
 
-  onTextEntered(text) {
-    if (!text) {
-      return alert('Enter a url first');
+  rightButton() {
+    if (this.state.published) {
+      return;
     }
-    console.log(text);
-    this.setState({ busy: true });
-    this.chatBox.setDisabled(true);
-    getCard(text, this.state.cards)
-      .then((card) => {
-
-        this.setState({ cards: this.state.cards.concat(card), busy: false })
-        console.log(card, this.refs.chatBox, this.state.cards);
-        this.chatBox.setDisabled(false);
-        this.chatBox.setText('');
-      })
-      .catch((error) => {
-        if (error && error.message) {
-          if (/Card already exist/i.test(error.message) ||
-              /Invalid text/i.test(error.message) ||
-              /Invalid network/i.test(error.message) ||
-              /Failed to create card/i.test(error.message)
-            ) {
-            return alert(error.message);
-          } else {
-            return alert('Unknown error');
-            console.log(error);
-          }
-        }
-      })
-      .then(() => {
-        this.chatBox.setText('');
-        this.chatBox.setDisabled(false);
-        this.setState({ busy: false });
-      });
+    let disabled = false;
+    if (!this.state.title || !this.state.description || this.state.cards.length === 0 || this.state.saving) {
+      disabled = true;
+    }
+    return <RaisedButton primary={true} label="Save" disabled={disabled} onClick={this.onSaveClick} />;
   }
 
   chatUI() {
-    return <ChatBox ref="chatBox" onTextEntered={this.onTextEntered.bind(this)}/>;
+    if (this.state.published || !this.state.current_user || !this.state.user || this.state.current_user !== this.state.user.id) {
+      return;
+    }
+    return (
+      <div className="chat-box">
+        <ChatBox ref="chatBox" onTextEntered={this.onTextEntered} busy={this.state.busy} saving={this.state.saving} />
+      </div>
+    );
   }
 
   cardsUI() {
-    console.log('Cards', this.state.cards);
     if (this.state.cards.length > 0) {
       return <Cards cards={this.state.cards} />;
     } else {
@@ -149,9 +150,7 @@ class Board extends React.Component {
           rightButton={this.rightButton()} />
         <div className="board">
           { this.cardsUI() }
-          <div className="chat-box">
-            {this.chatUI()}
-          </div>
+          {this.chatUI()}
         </div>
       </div>
     );
@@ -176,6 +175,8 @@ class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.initialState();
+    this.onAdd = this.onAdd.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   initialState() {
@@ -192,31 +193,40 @@ class ChatBox extends React.Component {
   onAdd() {
     const { onTextEntered } = this.props;
     if (!this.state.text) {
-      alert("Please enter a social media URL");
+      alert("Please enter a social media URL or embed HTML code");
       return;
     }
     this.setState({disabled : true});
-    onTextEntered(this.state.text);
-  }
-
-  setDisabled(disabled) {
-    console.log('set disabled');
-    this.setState({disabled: disabled});
-    this.forceUpdate();
+    onTextEntered(this.state.text)
+      .then((retValue) => {
+        if (retValue === true) {
+          return this.setState({ text: '' });
+        }
+        if (retValue && retValue.message) {
+          if (/Card already exist/i.test(retValue.message) ||
+              /Invalid text/i.test(retValue.message) ||
+              /Invalid network/i.test(retValue.message) ||
+              /Failed to create card/i.test(retValue.message)
+            ) {
+            return alert(retValue.message);
+          }
+          console.log(error);
+          return alert('Unknown error!');
+        }
+      })
+      .then(() => this.setState({ disabled: false }));
   }
 
   setText(text) {
     this.setState({text: text});
-    this.forceUpdate();
   }
 
   render() {
-    let disabled = this.state.disabled;
     return (
       <div className="chat-box-container">
-        <input type="text" name="url-input" placeholder="Enter URL" value={this.state.text} className="chat-box-input" onChange={this.onChange.bind(this)}/>
+        <input type="text" name="url-input" placeholder="Enter URL" value={this.state.text} className="chat-box-input" onChange={this.onChange}/>
         <div className="button-container">
-          <RaisedButton primary={true} onClick={this.onAdd.bind(this)} label="ADD" disabled={disabled}/>
+          <RaisedButton primary={true} onClick={this.onAdd} label="ADD" disabled={this.props.busy || this.props.saving || this.state.disabled}/>
         </div>
       </div>
     );
