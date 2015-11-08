@@ -73,13 +73,14 @@ export default class LoginPage extends Component {
         <div className={classNames('stories')}>
           <div className={classNames('title')} />
           <StoryTabs />
-        </div>
-        <div className="footer">
-          <div className="container">
-            <div className="title">Developers</div>
-            <a href="https://twitter.com/_kulbir" className="twitter-follow-button" data-show-count="false">Follow @_kulbir</a>
-            <a href="https://twitter.com/rajamal" className="twitter-follow-button" data-show-count="false">Follow @rajamal</a>
-          </div>
+        </div><br /><br /><br />
+        <div style={{ textAlign: 'center', clear: 'both' }}>
+          <a href="https://twitter.com/rajamal">
+            <Avatar size={100} src='https://abs.twimg.com/sticky/default_profile_images/default_profile_5_200x200.png' />
+          </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="https://twitter.com/_kulbir">
+            <Avatar size={100} src='https://pbs.twimg.com/profile_images/446989925494190080/4GOZB0fn.jpeg' />
+          </a>
         </div>
       </div>
     );
