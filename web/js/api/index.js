@@ -58,7 +58,7 @@ export function GET(url, data = null) {
   if (data) {
     url += '?' + Qs.stringify(data);
   }
-  return fetch(url, { headers: { 'Access-Control-Allow-Origin': '*' } })
+  return fetch(url, { credentials: 'same-origin' })
     .then(errorFilter)
     .then((response) => response.json());
 }
@@ -89,21 +89,21 @@ export function getInstagramJson(url) {
 }
 
 export function getBoard(boardId) {
-  return GET(`/boards/${boardId}`);
+  return GET(`/api/boards/${boardId}`);
 }
 
 export function getBoards(cursor = -1, count = 10, order = 'desc') {
-  return GET('/boards', { cursor, count, order });
+  return GET('/api/boards', { cursor, count, order });
 }
 
 export function createBoard(params) {
-  return POST('/boards', params);
+  return POST('/api/boards', params);
 }
 
 export function updateBoard(boardId, params) {
-  return PUT(`/boards/${boardId}`, params)
+  return PUT(`/api/boards/${boardId}`, params)
 }
 
 export function deleteBoard(boardId) {
-  return DELETE(`/boards/${boardId}`);
+  return DELETE(`/api/boards/${boardId}`);
 }

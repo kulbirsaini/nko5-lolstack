@@ -3,6 +3,10 @@
 import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Youtube
+export function renderYoutubeWidget(elementId, params) {
+  return createYoutubePlayer(params.id, params.list, elementId);
+}
+
 export function createYoutubePlayer(video_id, list, elementId) {
   let player;
   if (list && list.index && +list.index > 0) {
@@ -11,7 +15,7 @@ export function createYoutubePlayer(video_id, list, elementId) {
 
   let params = {
     height: '390',
-    width: '640',
+    width: '400',
     videoId: video_id,
     events: {
       'onReady': function() {
@@ -36,8 +40,7 @@ export function createYoutubeEmbed(video_id, list, cards) {
     return Promise.reject(new Error('Card already exists'));
   }
 
-  const render = () => createYoutubePlayer(video_id, list, elementId);
-  return { type: 'youtube', elementId, render };
+  return { type: 'youtube', elementId, render: { id: video_id, list } };
 }
 
 export function getYoutubeCard(text, type, cards) {

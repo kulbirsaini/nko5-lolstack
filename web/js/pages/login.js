@@ -17,6 +17,3 @@ window.onload = renderLoginPage;
 function renderLoginPage() {
   ReactDOM.render(<LoginPage />, document.getElementById('content'));
 }
-
-
-

@@ -15,6 +15,14 @@ module.exports = {
       'webpack-hot-middleware/client',
       './js/pages/login.js'
     ],
+    board: [
+      'webpack-hot-middleware/client',
+      './js/pages/board.jsx'
+    ],
+    boards: [
+      'webpack-hot-middleware/client',
+      './js/pages/boards.jsx'
+    ],
   },
   resolve: {
     extensions: ["", ".js", ".jsx", ".scss"]

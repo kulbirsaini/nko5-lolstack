@@ -62,7 +62,7 @@ app.use(Middlewares.queryLogger);
 
 app.use('/auth'       , authRouter);
 app.use('/api/boards' , boardRouter);
-app.use('*'           , indexRouter);
+app.use('/'           , indexRouter);
 
 app.use(Middlewares.NotFoundHandler);
 app.use(Middlewares.errorHandler);

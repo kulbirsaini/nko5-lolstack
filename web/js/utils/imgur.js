@@ -2,16 +2,17 @@
 
 import { findElementIdInCards, parseUrl } from './common';
 
+export function renderImgurWidget(elementId, params) {
+  document.getElementById(elementId).innerHTML = `<blockquote class="imgur-embed-pub" lang="en" data-id="${params.id}"></blockquote>`;
+  imgurEmbed.createIframe();
+}
+
 export function createImgurEmbed(imgId, cards) {
   const elementId = 'imgur-embed-' + imgId;
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => {
-    document.getElementById(elementId).innerHTML = `<blockquote class="imgur-embed-pub" lang="en" data-id="${imgId}"></blockquote>`;
-    imgurEmbed.createIframe();
-  };
-  return { type: 'imgur', elementId, render };
+  return { type: 'imgur', elementId, render: { id: imgId } };
 }
 
 export function getImgurCard(text, type, cards) {

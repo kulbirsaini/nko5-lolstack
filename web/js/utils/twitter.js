@@ -3,13 +3,28 @@
 import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Twitter
-export function createTwitterTweet(tweetId, cards, options) {
+// params = { type, id, styleOptions }
+export function renderTwitterWidget(elementId, params) {
+  switch(params.type) {
+    case 'createTweet':
+      return twttr.widgets.createTweet(params.id, document.getElementById(elementId), params.options);
+    case 'createVideo':
+      return twttr.widgets.createVideo(params.id, document.getElementById(elementId), params.options);
+    case 'createMoment':
+      return twttr.widgets.createMoment(params.id, document.getElementById(elementId), params.options);
+    case 'createTimeline':
+      return twttr.widgets.createTimeline(params.id, document.getElementById(elementId), params.options);
+    case 'createGridFromCollection':
+      return twttr.widgets.createGridFromCollection(params.id, document.getElementById(elementId), params.options);
+  }
+}
+
+export function createTwitterTweet(tweetId, cards, opts) {
   const elementId = 'twitter-tweet-' + tweetId;
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => twttr.widgets.createTweet(tweetId, document.getElementById(elementId), Object.assign({ align: 'left' }, options));
-  return { type: 'twitter', elementId: elementId, render };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createTweet', id: tweetId, options: Object.assign({ align: 'left' }, opts) } };
 }
 
 export function createTwitterVideo(videoId, cards, options) {
@@ -17,8 +32,7 @@ export function createTwitterVideo(videoId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => twttr.widgets.createVideo(videoId, document.getElementById(elementId), Object.assign({ align: 'left' }, options));
-  return { type: 'twitter', elementId: elementId, render };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createVideo', id: videoId, options: Object.assign({ align: 'left' }, options) } };
 }
 
 export function createTwitterMoment(momentId, cards, options) {
@@ -26,8 +40,7 @@ export function createTwitterMoment(momentId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => twttr.widgets.createMoment(momentId, document.getElementById(elementId), Object.assign({ width: 400, align: 'left' }, options));
-  return { type: 'twitter', elementId: elementId, render };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createMoment', id: momentId, options: Object.assign({ width: 400, align: 'left' }, options) } };
 }
 
 export function createTwitterTimeline(timelineId, cards, options) {
@@ -35,17 +48,16 @@ export function createTwitterTimeline(timelineId, cards, options) {
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => twttr.widgets.createTimeline(timelineId, document.getElementById(elementId), Object.assign({ tweetLimit: 4, align: 'left' }, options));
-  return { type: 'twitter', elementId: elementId, render };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createTimeline', id: timelineId, options: Object.assign({ tweetLimit: 4, align: 'left' }, options) } };
 }
 
-export function createTwitterGridFromCollection(collectionId, cards, options) {
+export function createTwitterGridFromCollection(collectionId, cards, opts) {
+  console.log(collectionId);
   const elementId = 'twitter-timeline-' + collectionId;
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => twttr.widgets.createGridFromCollection(collectionId, document.getElementById(elementId), Object.assign({ limit: 4, width: 400, align: 'left' }, options));
-  return { type: 'twitter', elementId: elementId, render };
+  return { type: 'twitter', elementId: elementId, render: { type: 'createGridFromCollection', id: collectionId, options: Object.assign({ limit: 4, width: 400, align: 'left' }, opts) } };
 }
 
 export function getTwitterCard(text, type, cards) {

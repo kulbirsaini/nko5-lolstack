@@ -3,13 +3,16 @@
 import { findElementIdInCards, parseUrl } from './common';
 
 // BEGIN - Vine
+export function renderVineWidget(elementId, params) {
+  return document.getElementById(elementId).innerHTML = `<iframe src="https://vine.co/v/${params.id}/embed/simple" width="400" height="400" frameborder="0" />`;
+}
+
 export function createVineEmbed(vineId, cards) {
   const elementId = 'vine-embed-' + vineId;
   if (findElementIdInCards(elementId, cards)) {
     return Promise.reject(new Error('Card already exists'));
   }
-  const render = () => document.getElementById(elementId).innerHTML = `<iframe src="https://vine.co/v/${vineId}/embed/simple" width="400" height="400" frameborder="0" />`;
-  return { type: 'vine', elementId: elementId, render };
+  return { type: 'vine', elementId: elementId, render: { id: vineId } };
 }
 
 export function getVineCard(text, type, cards) {
