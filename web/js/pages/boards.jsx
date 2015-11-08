@@ -4,25 +4,67 @@ import 'babel-core/polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom'
+import classNames from 'classnames';
 import { AppBar, FontIcon, IconButton, Card, CardHeader, CardMedia, RaisedButton, LinearProgress } from 'material-ui';
+import { TextField, CircularProgress, List, ListItem, ListDivider, Avatar } from  'material-ui';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 import Qs from 'qs';
 
+import { Logout } from '../components/logout';
+
 import { getBoards } from '../api';
 import { renderCard } from '../utils';
 
-let homeButtonElement = (
-  <IconButton
-    tooltip='Home'
-    tooltipPosition='bottom-right'>
-    <a href='/'>
-      <FontIcon className='material-icons' color={'#000'}>home</FontIcon>
-    </a>
-  </IconButton>
-);
+import './home.scss';
+
+class BoardAppBar extends React.Component {
+  render() {
+    return (
+      <div className="top-bar">
+        <div className="logo"> <a href="/" >As it Happened </a> </div>
+        <div className="title" >{this.props.title}</div>
+      </div>
+    );
+  }
+};
+
+export class StoryItem extends React.Component {
+  render() {
+    const { story } = this.props;
+    return (
+      <ListItem key={story.id}
+          onTouchTap={() => window.location.href = "/boards/"+story.id }
+          leftAvatar={<Avatar src={story.user.profile_image_url} />}
+          primaryText={story.title}
+          secondaryText={ story.description }
+          secondaryTextLines={2} />
+    );
+  }
+}
+
+export class StoriesList extends React.Component {
+  render() {
+    const { stories = [] } = this.props;
+
+    let storyItems = [];
+    stories.forEach((story) => {
+      storyItems.push(<StoryItem key={story.id} story={story} />);
+      storyItems.push(<ListDivider key={'divider-' + story.id} />);
+    });
+
+    return (
+      <ReactCSSTransitionGroup transitionName="story-item" transitionEnterTimeout={400} transitionLeaveTimeout={400}>
+        <List>
+          {storyItems}
+        </List>
+      </ReactCSSTransitionGroup>
+    );
+  }
+}
 
 class Board extends React.Component {
   constructor(props) {
@@ -31,7 +73,6 @@ class Board extends React.Component {
     this.setQueryStrings = this.setQueryStrings.bind(this);
     this.getBoardsUI = this.getBoardsUI.bind(this);
     this.loadBoards = this.loadBoards.bind(this);
-    this.renderBoards = this.renderBoards.bind(this);
   }
 
   setQueryStrings() {
@@ -42,7 +83,7 @@ class Board extends React.Component {
 
   initialState() {
     return {
-      isFetching: false,
+      isLoading: false,
       boards: [],
       renderedBoards: [],
       prev_cursor: -1,
@@ -54,18 +95,18 @@ class Board extends React.Component {
   }
 
   loadBoards() {
-    this.setState({ isFetching: true });
+    this.setState({ isLoading: true });
     return getBoards(this.state.next_cursor, this.state.count, this.state.order)
       .then((json) => {
         this.setState({
-          isFetching: false,
+          isLoading: false,
           boards: this.state.boards.concat(json.boards),
           prev_cursor: json.prev_cursor,
           next_cursor: json.next_cursor,
           error: null
         });
       })
-      .catch((error) => this.setState({ isFetching: false, error: 'Error in fetching boards' }))
+      .catch((error) => this.setState({ isLoading: false, error: 'Error in fetching boards' }))
       .then(() => console.log('done'));
   }
 
@@ -74,49 +115,26 @@ class Board extends React.Component {
     this.loadBoards();
   }
 
-  componentDidUpdate() {
-    this.renderBoards();
-  }
-
   getBoardsUI() {
-    return this.state.boards.map((board) => {
+    if (!this.state.isLoading) {
       return (
-        <Card key={board.id}>
-          <CardHeader title={board.title} subtitle={board.description} />
-          <CardMedia>
-            <div className='card-content'>
-              <div id={`${board.cards[0].elementId}-${board.id}`} />
-            </div>
-          </CardMedia>
-        </Card>
+        <div className={classNames('boards')} >
+          <StoriesList stories={this.state.boards} />
+        </div>
       );
-    });
-  }
-
-  renderBoards() {
-    if (this.state.boards.length === this.state.renderedBoards.length) {
-      return;
+    } else {
+      return (
+        <div className={classNames('progress')} >
+          <CircularProgress size={0.5} />
+        </div>
+      );
     }
-    let renderInstagram = false;
-    this.state.boards.forEach((board) => {
-      if (this.state.renderedBoards.indexOf(board.id) > -1) {
-        return;
-      }
-      renderCard(board.cards[0], board.id);
-      if (board.cards[0].type === 'instagram') {
-        renderInstagram = true;
-      }
-    });
-    if (renderInstagram) {
-      instgrm.Embeds.process();
-    }
-    this.setState({ renderedBoards: this.state.boards.map((board) => board.id) });
   }
 
   render() {
 
-    let loadButton = <RaisedButton onClick={this.loadBoards} label="Load More" secondary={true} />
-    if (this.state.isFetching) {
+    let loadButton = <RaisedButton onClick={this.loadBoards} label="Load More" secondary={true}/>
+    if (this.state.isLoading) {
       loadButton = <LinearProgress mode="indeterminate"  />;
     } else if (this.state.next_cursor === '0' || this.state.next_cursor === 0) {
       loadButton = '';
@@ -124,12 +142,22 @@ class Board extends React.Component {
 
     return (
       <div id="main">
-        <AppBar
-          title={this.state.title}
-          iconElementLeft={homeButtonElement}
-          showMenuIconButton={true} />
-        {this.getBoardsUI()}
-        {loadButton}
+        <BoardAppBar
+          title={this.state.title} />
+        <div className="container">
+          <div id="board-builder" className="board-builder">
+            <div className="title"> Create Board </div>
+          </div>
+
+        </div>
+        <div className="new-board-container">
+        </div>
+        <div className="stories-container">
+          {this.getBoardsUI()}
+        </div>
+        <div id="load" style={{ textAlign: 'center' }} >
+          {loadButton}
+        </div>
       </div>
     );
   }
