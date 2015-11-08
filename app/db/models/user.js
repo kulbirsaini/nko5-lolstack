@@ -33,6 +33,7 @@ class User extends ClassWithProps {
       screen_name: profile.userName,
       description: (profile._json.description || '').replace(/\0/g, ''),
       profile_image_url: profile._json.profile_image_url,
+      profile_banner_url: profile._json.profile_banner_url,
       access_token: token,
       access_token_secret: tokenSecret
     };
