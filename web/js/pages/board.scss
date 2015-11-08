@@ -32,22 +32,29 @@ $chat-box-height: 60px;
 .top-bar {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   height: $nav-bar-height;
   background-color: $lolstack-blue;
   padding-top: 15px;
   position: fixed;
   top: 0px;
 
-  .logo {
-    a {
-      color: white;
-      font-size: 27px;
-      font-weight: 200;
-      font-family: Lobster;
-      text-decoration: none;
-      padding-left: 50px;
+  .left {
+    .logo {
+      a {
+        color: white;
+        font-size: 27px;
+        font-weight: 200;
+        font-family: Lobster;
+        text-decoration: none;
+        padding-left: 50px;
+      }
+      float: left;
+      margin-right: 20px;
     }
+  }
+  .button {
+    margin-right: 60px;
   }
 
   .title {

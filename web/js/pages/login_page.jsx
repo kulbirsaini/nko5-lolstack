@@ -55,7 +55,12 @@ export default class LoginPage extends Component {
               <div className={classNames('button-container')}>
                 <RaisedButton linkButton={true} href="/auth/twitter" primary={true} label="Login with Twitter">
                   <i className={classNames('fa fa-twitter')} style={styles.buttonTwitterIcon}></i>
+                </RaisedButton>
 
+              </div>
+
+              <div className={classNames('button-container')}>
+                <RaisedButton linkButton={true} href="/boards" primary={true} label="All Stories">
                 </RaisedButton>
               </div>
               <div className={classNames('supported-social-media')}>
