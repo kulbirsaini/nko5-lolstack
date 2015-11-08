@@ -28,7 +28,7 @@ router.route('/')
       return Board.create(req._boardParams)
         .then((new_board) => {
           if (new_board) {
-            return res.status(200).send(new_board.toJSON());
+            return res.status(200).send(Object.assign({}, new_board.toJSON(),{user: req._currentUser.getPropsWithout(['access_token', 'access_token_secret'])}));
           }
           return next(new errors.GenericApiError('Unable to save board', 422));
         })

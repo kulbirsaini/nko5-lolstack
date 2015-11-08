@@ -8,7 +8,7 @@ module.exports = {
 
   entry: {
     home: [
-      './js/index.js'
+      './js/pages/home.jsx'
     ],
     login: [
       './js/pages/login.js'
