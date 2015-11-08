@@ -66,9 +66,10 @@ function verifyCards(cards) {
     return new errors.MissingParameterApiError("Invalid type of cards", 422);
   }
 
+  /*
   if (cards.length === 0) {
     return new errors.MissingParameterApiError("Board should have at least one card", 422);
-  }
+  } */
 
   for(const card of cards) {
     if (!card.type || VALID_CARD_TYPES.indexOf(card.type) < 0) {
