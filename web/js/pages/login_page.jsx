@@ -4,6 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { Avatar, CircularProgress, List, ListItem, ListDivider, RaisedButton, Tabs, Tab } from 'material-ui';
 
+import { getRecentBoards, getPopularBoards } from '../api';
+
 import './login.scss';
 
 const styles = {
@@ -32,7 +34,7 @@ export default class LoginPage extends Component {
             </div>
             <div className={classNames('top-bar-right')}>
               <div className={classNames('node-knockout-button')}>
-                <iframe src="http://nodeknockout.com/iframe/lolstack" frameborder={0} scrolling="no" allowtransparency={true} width={115} height={25}>
+                <iframe src="http://nodeknockout.com/iframe/lolstack" frameBorder={0} scrolling="no" allowTransparency={true} width={115} height={25}>
                 </iframe>
               </div>
             </div>
@@ -40,7 +42,7 @@ export default class LoginPage extends Component {
           <div className={classNames('info')}>
             <div className={classNames('info-container')}>
               <div className={classNames('video')}>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/xpWOO9nRvIU" frameborder="0"></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/xpWOO9nRvIU" frameBorder="0"></iframe>
               </div>
               <div className={classNames('message')}>
                 <div className={classNames('title')}>
@@ -116,97 +118,22 @@ export class StoryTabs extends Component {
   }
 };
 
-
-const boardsData = [
-  {
-    id: 1,
-    title: 'Hello World',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock'
-    }
-  },
-  {
-    id: 2,
-    title: 'Hello World 1',
-    subtitle: 'Awesome 1',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock'
-    }
-  },
-  {
-    id: 3,
-    title: 'Hello World 3',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock 3 '
-    }
-  },
-  {
-    id: 4,
-    title: 'Hello World 4',
-    subtitle: 'Awesome',
-    user: {
-      profile_image_url: 'https://pbs.twimg.com/profile_images/589688464871948288/Zr26Iais_400x400.jpg',
-      name: 'Sherlock 4'
-    }
-  },
-];
-
-
-
-export class Stories extends Component {
+export class MostPopularTab extends Component {
   constructor(props) {
     super(props);
     this.state = this.initialState();
   }
 
   initialState() {
-    return {
-      isLoading: true,
-      stories: []
-    }
+    return { boards: [], isLoading: false, error: null };
   }
 
-  componentDidMount() {
-    this.fetchStories();
-  }
-
-  refresh() {
-    this.state = this.initialState();
-    this.fetchStories();
-  }
-
-  render() {
-    if (this.state.isLoading) {
-      return (
-        <div className={classNames('stories')}>
-          <div className={classNames('progress')} >
-            <CircularProgress />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classNames('stories')}>
-          Most Popular
-        </div>
-      );
-    }
-
-  }
-}
-
-
-export class MostPopularTab extends Stories {
-
-  fetchStories() {
-    setTimeout(() => {
-      this.setState({stories: boardsData, isLoading: false});
-    }, 2000);
+  componentWillMount() {
+    this.setState({ isLoading: true });
+    return getPopularBoards(5)
+      .then((boards) => this.setState({ boards: boards }))
+      .catch((error) => this.setState({ error: 'Error fetching popular boards' }))
+      .then(() => this.setState({ isLoading: false }));
   }
 
   render() {
@@ -221,7 +148,7 @@ export class MostPopularTab extends Stories {
     } else {
       return (
         <div className={classNames(['stories', 'most-popular-stories'])}>
-          <StoriesList stories={this.state.stories} />
+          <StoriesList stories={this.state.boards} />
         </div>
       );
     }
@@ -229,12 +156,22 @@ export class MostPopularTab extends Stories {
   }
 };
 
+export class LatestTab extends Component {
+  constructor(props) {
+    super(props);
+    this.state = this.initialState();
+  }
 
-export class LatestTab extends Stories {
-  fetchStories() {
-    setTimeout(() => {
-      this.setState({stories: boardsData, isLoading: false});
-    }, 2000);
+  initialState() {
+    return { boards: [], isLoading: false, error: null };
+  }
+
+  componentWillMount() {
+    this.setState({ isLoading: true });
+    return getRecentBoards(5)
+      .then((boards) => this.setState({ boards: boards }))
+      .catch((error) => this.setState({ error: 'Error fetching popular boards' }))
+      .then(() => this.setState({ isLoading: false }));
   }
 
   render() {
@@ -249,7 +186,7 @@ export class LatestTab extends Stories {
     } else {
       return (
         <div className={classNames(['stories', 'latest-stories'])}>
-          <StoriesList stories={this.state.stories} />
+          <StoriesList stories={this.state.boards} />
         </div>
       );
     }
@@ -264,7 +201,7 @@ export class StoryItem extends Component {
           onTouchTap={() => window.location.href = "/boards/"+story.id }
           leftAvatar={<Avatar src={story.user.profile_image_url} />}
           primaryText={story.title}
-          secondaryText={ story.subtitle }
+          secondaryText={ story.description }
           secondaryTextLines={2} />
     );
   }

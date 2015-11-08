@@ -96,6 +96,14 @@ export function getBoards(cursor = -1, count = 10, order = 'desc') {
   return GET('/api/boards', { cursor, count, order });
 }
 
+export function getRecentBoards(count) {
+  return GET('/api/boards/recent', { count });
+}
+
+export function getPopularBoards(count) {
+  return GET('/api/boards/popular', { count });
+}
+
 export function createBoard(params) {
   return POST('/api/boards', params);
 }
